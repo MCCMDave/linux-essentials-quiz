@@ -10,17 +10,35 @@ An interactive quiz system for Linux Essentials 010-160 exam preparation with 27
 
 ## ✨ Features
 
+### 🎯 Two Versions Available
+
+**🐍 Python Terminal Version** (`quiz_engine_v2.py`)
+- Terminal-based quiz with live countdown timer
+- Built-in question editor (open fragen.json from menu)
+- Weighted exam mode (LPI-compliant topic distribution)
+- Real-time timer display during questions
+- Cross-platform (Windows/Linux/macOS)
+
+**🌐 Web Browser Version** (`index.html`)
+- Beautiful web interface with modern design
+- No installation needed - just open in browser
+- Weighted exam mode with 800-point scoring system
+- Instant explanations for wrong answers
+- Mobile-friendly responsive layout
+
+### 📚 Core Features (Both Versions)
+
 - ✅ **276 Official Questions** - Complete Linux Essentials 010-160 coverage
 - ✅ **3 Quiz Modes:**
   - **Learning Mode:** All 276 questions, no time limit
-  - **Exam Mode:** 40 questions, 60 minutes timer (like real exam!)
+  - **Exam Mode:** 40 questions, 60 minutes, weighted by LPI topics
   - **Custom Mode:** Choose any number of questions
 - ✅ **Smart Randomization:**
   - Questions in random order
   - Answers shuffled (A-D) to prevent memorization
 - ✅ **Statistics & Evaluation:**
   - Percentage score
-  - Pass/Fail indicator (≥60%)
+  - Pass/Fail indicator (≥60% / ≥500 points)
   - Time tracking in Exam mode
 - ✅ **Add Your Own Questions** - Easy JSON format (see guide below)
 
@@ -28,12 +46,22 @@ An interactive quiz system for Linux Essentials 010-160 exam preparation with 27
 
 ## 🎮 Quick Start
 
+### 🌐 Web Version (Easiest)
+
+1. Download or clone the repository
+2. Open `index.html` in your browser
+3. Start learning!
+
+**No installation needed!** ✅
+
+### 🐍 Python Terminal Version
+
 ```bash
 # Clone repository
 git clone https://github.com/MCCMDave/linux-essentials-quiz.git
 cd linux-essentials-quiz
 
-# Run quiz
+# Run Python quiz
 python quiz_engine_v2.py
 ```
 
@@ -188,16 +216,27 @@ Currently in development! Soon you'll be able to:
 - Perfect for comprehensive study
 
 #### ⏱️ Exam Mode
-- 40 random questions
-- 60 minute timer
+- 40 questions with **LPI-weighted topic distribution**:
+  - Topic 1: 7 questions (17.5%)
+  - Topic 2: 9 questions (22.5%)
+  - Topic 3: 9 questions (22.5%)
+  - Topic 4: 8 questions (20%)
+  - Topic 5: 7 questions (17.5%)
+- 60 minute timer (Python: live countdown!)
 - Time warning at <5 minutes
-- Pass/Fail display (≥60%)
+- Pass/Fail display (≥60% or ≥500 points)
 - Realistic exam simulation
 
 #### 🎛️ Custom Mode
 - Choose 1-276 questions
 - No time limit
 - Flexible practice
+
+#### 📝 Question Editor (Python only)
+- Built-in menu option to edit questions
+- Opens `fragen.json` in your default editor
+- Access to `FRAGEN-HINZUFUEGEN.md` guide
+- Quick and easy question management
 
 ---
 
@@ -227,24 +266,40 @@ Based on **Linux Essentials 010-160 v1.6** exam format.
 
 ```
 linux-essentials-quiz/
-├── quiz_engine_v1.py       # Version 1 (277 embedded questions)
-├── quiz_engine_v2.py       # Version 2 (loads from JSON) ⭐
-├── fragen.json             # Question database (276 questions)
-├── README.md               # This file
-├── README_DE.md            # German documentation
-└── LICENSE                 # Apache 2.0 License
+├── index.html                  # 🌐 Web version (browser-based)
+├── quiz_engine_v2.py           # 🐍 Python terminal version (with live timer)
+├── quiz_engine_v1.py           # Legacy version (embedded questions)
+├── fragen.json                 # Question database (276 questions)
+├── FRAGEN-HINZUFUEGEN.md       # Guide for adding questions
+├── README.md                   # English documentation
+├── README_DE.md                # German documentation
+└── LICENSE                     # Apache 2.0 License
 ```
 
 ---
 
 ## 🛠️ Tech Stack
 
-### Python 3.13
-**Standard Library:**
-- `json` - Data import/export
-- `random` - Shuffling
-- `time` - Timer functionality
-- `os` - Path handling
+### 🌐 Web Version
+**Technologies:**
+- HTML5 - Structure
+- CSS3 - Modern styling with gradients
+- JavaScript (ES6+) - Quiz logic and interactivity
+- No frameworks needed!
+
+**Features:**
+- Responsive design (mobile-friendly)
+- 800-point scoring system
+- Instant answer explanations
+- Progress bar and stats
+
+### 🐍 Python Version
+**Python 3.10+ with Standard Library:**
+- `json` - Question database loading
+- `random` - Shuffling and randomization
+- `time` - Timer and countdown functionality
+- `threading` - Live timer display
+- `os` / `sys` - Cross-platform file opening
 
 **No external dependencies!** ✅
 
@@ -279,14 +334,22 @@ Python Developer | Linux Essentials Certified (85%+)
 
 ## 📝 Changelog
 
-### v2.0 (November 2025)
-- ✅ JSON database with 276 questions
+### v2.1 (January 2025) - Python Enhancements
+- ✅ **Live Timer:** Real-time countdown display during questions
+- ✅ **Weighted Exam:** LPI-compliant topic distribution in exam mode
+- ✅ **Question Editor:** Built-in menu to edit fragen.json
+- ✅ **UI Improvements:** Better visual separation with divider lines
+- ✅ **README Updates:** Documented both web and Python versions
+
+### v2.0 (November 2025) - Web & Python
+- ✅ Web version (index.html) with modern UI
+- ✅ Python version with JSON database (276 questions)
 - ✅ 3 quiz modes (Learning/Exam/Custom)
 - ✅ Timer system for exam mode
 - ✅ Answer shuffling
 - ✅ Pass/Fail logic
 
-### v1.0 (November 2025)
+### v1.0 (November 2025) - Initial Release
 - ✅ Basic quiz with 277 embedded questions
 - ✅ OOP with Question class
 

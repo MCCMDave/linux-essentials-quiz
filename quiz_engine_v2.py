@@ -10,9 +10,11 @@ Assignment: Python OOP Grundlagen
 # Importierte Module
 import json
 import random
-import os 
+import os
 from datetime import date
 import time
+import threading
+import sys
 
 # Konstanten f. d. Formatierung
 BREITE = 95
@@ -85,9 +87,9 @@ def zeige_zeitwarnung(verbleibende_zeit):
 def zeige_menue():
     """
     Zeigt das Menü zur Auswahl des Quiz-Modus.
-    
+
     Returns:
-        str: Die Wahl des Users ("1", "2", "3" oder "0")
+        str: Die Wahl des Users ("1", "2", "3", "4" oder "0")
     """
     leer()
     zeige_zeile(" QUIZ-MODUS WÄHLEN ")
@@ -95,32 +97,33 @@ def zeige_menue():
     zeige_zeile(" [1] Lernmodus - Alle Fragen (276) ")
     zeige_zeile(" [2] Prüfungsmodus - 40 Fragen, 60 Min ")
     zeige_zeile(" [3] Custom - Anzahl wählen ")
+    zeige_zeile(" [4] Fragen bearbeiten ")
     zeige_zeile(" [0] Beenden ")
     leer()
     trennung()
-    
+
     while True:
         leer()
-        wahl = input(RAHMEN*2 + " " * EINRUECKUNG + "Deine Wahl (0/1/2/3): ")
-        
-        if wahl in ["0", "1", "2", "3"]:
+        wahl = input(RAHMEN*2 + " " * EINRUECKUNG + "Deine Wahl (0/1/2/3/4): ")
+
+        if wahl in ["0", "1", "2", "3", "4"]:
             return wahl
         else:
             leer()
-            zeige_zeile(" FEHLER: Bitte nur 0, 1, 2 oder 3 eingeben! ")
+            zeige_zeile(" FEHLER: Bitte nur 0, 1, 2, 3 oder 4 eingeben! ")
 def hole_anzahl_fragen(max_fragen):
     """
     Fragt User nach gewünschter Anzahl Fragen.
-    
+
     Args:
         max_fragen (int): Maximum verfügbare Fragen
-        
+
     Returns:
         int: Gewählte Anzahl Fragen
     """
     leer()
     zeige_zeile(f" Wie viele Fragen möchtest du? (1-{max_fragen}) ")
-    
+
     while True:
         leer()
         try:
@@ -133,6 +136,101 @@ def hole_anzahl_fragen(max_fragen):
         except ValueError:
             leer()
             zeige_zeile(" FEHLER: Bitte eine gültige Zahl eingeben! ")
+
+def oeffne_fragen_editor():
+    """Öffnet die Fragendatei im Standard-Editor."""
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    json_pfad = os.path.join(script_dir, 'fragen.json')
+    anleitung_pfad = os.path.join(script_dir, 'FRAGEN-HINZUFUEGEN.md')
+
+    leer()
+    zeige_zeile(" FRAGEN-EDITOR ")
+    leer()
+    zeige_zeile(" Welche Datei möchtest du öffnen? ")
+    leer()
+    zeige_zeile(" [1] fragen.json (Fragen bearbeiten) ")
+    zeige_zeile(" [2] FRAGEN-HINZUFUEGEN.md (Anleitung lesen) ")
+    zeige_zeile(" [0] Zurück ")
+    leer()
+    trennung()
+
+    while True:
+        leer()
+        wahl = input(RAHMEN*2 + " " * EINRUECKUNG + "Deine Wahl (0/1/2): ")
+
+        if wahl == "0":
+            return
+        elif wahl == "1":
+            leer()
+            zeige_zeile(" Öffne fragen.json... ")
+            leer()
+            if sys.platform == "win32":
+                os.startfile(json_pfad)
+            elif sys.platform == "darwin":
+                os.system(f'open "{json_pfad}"')
+            else:
+                os.system(f'xdg-open "{json_pfad}"')
+            time.sleep(1)
+            return
+        elif wahl == "2":
+            leer()
+            zeige_zeile(" Öffne FRAGEN-HINZUFUEGEN.md... ")
+            leer()
+            if sys.platform == "win32":
+                os.startfile(anleitung_pfad)
+            elif sys.platform == "darwin":
+                os.system(f'open "{anleitung_pfad}"')
+            else:
+                os.system(f'xdg-open "{anleitung_pfad}"')
+            time.sleep(1)
+            return
+        else:
+            leer()
+            zeige_zeile(" FEHLER: Bitte nur 0, 1 oder 2 eingeben! ")
+
+class LiveTimer:
+    """Klasse für Live-Timer-Anzeige während des Quiz."""
+
+    def __init__(self, start_zeit, zeitlimit_sekunden):
+        """
+        Initialisiert den Live-Timer.
+
+        Args:
+            start_zeit (float): Startzeit (time.time())
+            zeitlimit_sekunden (int): Zeitlimit in Sekunden
+        """
+        self.start_zeit = start_zeit
+        self.zeitlimit_sekunden = zeitlimit_sekunden
+        self.running = False
+        self.thread = None
+
+    def start(self):
+        """Startet den Live-Timer in einem separaten Thread."""
+        self.running = True
+        self.thread = threading.Thread(target=self._update_timer, daemon=True)
+        self.thread.start()
+
+    def stop(self):
+        """Stoppt den Live-Timer."""
+        self.running = False
+        if self.thread:
+            self.thread.join(timeout=1)
+
+    def _update_timer(self):
+        """Aktualisiert die Timer-Anzeige jede Sekunde."""
+        while self.running:
+            verstrichene_zeit = time.time() - self.start_zeit
+            verbleibende_zeit = max(0, self.zeitlimit_sekunden - verstrichene_zeit)
+
+            # Timer-Zeile ausgeben (überschreibt vorherige)
+            timer_text = f"⏱️  Zeit verbleibend: {formatiere_zeit(verbleibende_zeit)}"
+            sys.stdout.write(f"\r{RAHMEN*2} {timer_text.center(INNENBREITE)} {RAHMEN*2}")
+            sys.stdout.flush()
+
+            if verbleibende_zeit <= 0:
+                break
+
+            time.sleep(1)
 
 # Klasse f. d. Fragen
 class Frage:
@@ -278,10 +376,17 @@ def main():
 
     # Menü anzeigen u. Modus wählen
     modus = zeige_menue()
-    
+
     if modus == "0":
         leer()
         zeige_zeile(" Bis bald! ")
+        footer()
+        return
+    elif modus == "4":
+        # Fragen-Editor öffnen
+        oeffne_fragen_editor()
+        leer()
+        zeige_zeile(" Zurück zum Hauptmenü ")
         footer()
         return
     
@@ -293,19 +398,47 @@ def main():
     hat_zeitlimit = False
     start_zeit = None
     zeitlimit_sekunden = 0
-    
+    live_timer = None
+
     # Anzahl Fragen je nach Modus
     if modus == "1":
         # Lernmodus: Alle Fragen
         pass
     elif modus == "2":
-        # Prüfungsmodus: 40 Fragen, 60 Min
-        fragen_liste = fragen_liste[:40]
+        # Prüfungsmodus: 40 Fragen mit Gewichtung, 60 Min
+        # Gewichtung nach LPI 010-160 v1.6
+        gewichtung = {
+            '1.': 7,   # Topic 1: 17.5% (7 von 40 Fragen)
+            '2.': 9,   # Topic 2: 22.5% (9 von 40 Fragen)
+            '3.': 9,   # Topic 3: 22.5% (9 von 40 Fragen)
+            '4.': 8,   # Topic 4: 20% (8 von 40 Fragen)
+            '5.': 7    # Topic 5: 17.5% (7 von 40 Fragen)
+        }
+
+        # Fragen nach Topics gruppieren und gewichtet auswählen
+        exam_fragen = []
+        for topic_prefix, anzahl in gewichtung.items():
+            # Filtere Fragen nach Topic (z.B. alle die mit "1." beginnen)
+            topic_fragen = [f for f in fragen_liste if f.kategorie.startswith(topic_prefix)]
+            # Mische und nimm die benötigte Anzahl
+            random.shuffle(topic_fragen)
+            exam_fragen.extend(topic_fragen[:anzahl])
+
+        # Gesamte Prüfung nochmal mischen
+        random.shuffle(exam_fragen)
+        fragen_liste = exam_fragen
+
         hat_zeitlimit = True
         zeitlimit_sekunden = 60 * 60  # 60 Minuten
         start_zeit = time.time()
         leer()
+        trennung()
+        leer()
         zeige_zeile(" ⏱️  Timer gestartet: 60 Minuten ")
+        leer()
+        # Live-Timer starten
+        live_timer = LiveTimer(start_zeit, zeitlimit_sekunden)
+        live_timer.start()
     elif modus == "3":
         # Custom: User wählt Anzahl
         anzahl = hole_anzahl_fragen(max_fragen)
@@ -365,13 +498,18 @@ def main():
             frage.zeige_antwort()
             tren_leer()
 
+    # Live-Timer stoppen (falls aktiv)
+    if live_timer:
+        live_timer.stop()
+        print()  # Neue Zeile nach Timer-Stop
+
     # Endergebnis
     leer()
     trennung()
     leer()
     zeige_zeile(" 📊 ENDERGEBNIS ")
     leer()
-    
+
     # Beantwortete Fragen (bei Zeitablauf)
     beantwortete_fragen = i if hat_zeitlimit else len(fragen_liste)
     

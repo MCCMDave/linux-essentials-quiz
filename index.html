@@ -1,0 +1,2904 @@
+<!DOCTYPE html>
+
+<html lang="de">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Linux Essentials 010-160 v1.6 - Prüfungssimulator</title>
+
+    <style>
+
+        * {
+
+            margin: 0;
+
+            padding: 0;
+
+            box-sizing: border-box;
+
+        }
+
+ 
+
+        body {
+
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+
+            min-height: 100vh;
+
+            padding: 20px;
+
+        }
+
+ 
+
+        .container {
+
+            max-width: 900px;
+
+            margin: 0 auto;
+
+            background: white;
+
+            border-radius: 20px;
+
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+
+            overflow: hidden;
+
+        }
+
+ 
+
+        .header {
+
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+
+            color: white;
+
+            padding: 30px;
+
+            text-align: center;
+
+        }
+
+ 
+
+        .header h1 {
+
+            font-size: 28px;
+
+            margin-bottom: 10px;
+
+        }
+
+ 
+
+        .header p {
+
+            opacity: 0.9;
+
+            font-size: 14px;
+
+        }
+
+ 
+
+        .stats {
+
+            display: grid;
+
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+
+            gap: 15px;
+
+            padding: 20px 30px;
+
+            background: #f8f9fa;
+
+            border-bottom: 2px solid #e9ecef;
+
+        }
+
+ 
+
+        .stat-box {
+
+            text-align: center;
+
+            padding: 15px;
+
+            background: white;
+
+            border-radius: 10px;
+
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+
+        }
+
+ 
+
+        .stat-label {
+
+            font-size: 12px;
+
+            color: #6c757d;
+
+            text-transform: uppercase;
+
+            margin-bottom: 5px;
+
+        }
+
+ 
+
+        .stat-value {
+
+            font-size: 24px;
+
+            font-weight: bold;
+
+            color: #1e3c72;
+
+        }
+
+ 
+
+        .timer {
+
+            color: #dc3545;
+
+        }
+
+ 
+
+        .content {
+
+            padding: 30px;
+
+        }
+
+ 
+
+        .start-screen {
+
+            text-align: center;
+
+            padding: 40px 20px;
+
+        }
+
+ 
+
+        .start-screen h2 {
+
+            color: #1e3c72;
+
+            margin-bottom: 20px;
+
+            font-size: 24px;
+
+        }
+
+ 
+
+        .info-box {
+
+            background: #e7f3ff;
+
+            border-left: 4px solid #2a5298;
+
+            padding: 20px;
+
+            margin: 20px 0;
+
+            text-align: left;
+
+        }
+
+ 
+
+        .info-box ul {
+
+            margin-left: 20px;
+
+            margin-top: 10px;
+
+        }
+
+ 
+
+        .info-box li {
+
+            margin: 8px 0;
+
+        }
+
+ 
+
+        .btn {
+
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+
+            color: white;
+
+            border: none;
+
+            padding: 15px 40px;
+
+            font-size: 18px;
+
+            border-radius: 50px;
+
+            cursor: pointer;
+
+            transition: transform 0.2s, box-shadow 0.2s;
+
+            margin: 10px;
+
+        }
+
+ 
+
+        .btn:hover {
+
+            transform: translateY(-2px);
+
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+
+        }
+
+ 
+
+        .btn:active {
+
+            transform: translateY(0);
+
+        }
+
+ 
+
+        .btn-secondary {
+
+            background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+
+        }
+
+ 
+
+        .question-container {
+
+            display: none;
+
+        }
+
+ 
+
+        .question-box {
+
+            background: #f8f9fa;
+
+            border-radius: 15px;
+
+            padding: 25px;
+
+            margin-bottom: 25px;
+
+        }
+
+ 
+
+        .question-number {
+
+            color: #667eea;
+
+            font-weight: bold;
+
+            font-size: 14px;
+
+            margin-bottom: 5px;
+
+        }
+
+ 
+
+        .topic-badge {
+
+            display: inline-block;
+
+            background: #e7f3ff;
+
+            color: #1e3c72;
+
+            padding: 5px 12px;
+
+            border-radius: 20px;
+
+            font-size: 12px;
+
+            margin-bottom: 15px;
+
+        }
+
+ 
+
+        .question-text {
+
+            font-size: 18px;
+
+            color: #212529;
+
+            margin-bottom: 20px;
+
+            line-height: 1.6;
+
+        }
+
+ 
+
+        .code-block {
+
+            background: #282c34;
+
+            color: #abb2bf;
+
+            padding: 15px;
+
+            border-radius: 8px;
+
+            font-family: 'Courier New', monospace;
+
+            margin: 15px 0;
+
+            overflow-x: auto;
+
+        }
+
+ 
+
+        .answers {
+
+            display: grid;
+
+            gap: 12px;
+
+        }
+
+ 
+
+        .answer-option {
+
+            background: white;
+
+            border: 2px solid #dee2e6;
+
+            border-radius: 10px;
+
+            padding: 15px 20px;
+
+            cursor: pointer;
+
+            transition: all 0.3s;
+
+            display: flex;
+
+            align-items: center;
+
+        }
+
+ 
+
+        .answer-option:hover {
+
+            border-color: #667eea;
+
+            background: #f8f9ff;
+
+            transform: translateX(5px);
+
+        }
+
+ 
+
+        .answer-option.selected {
+
+            background: #e7f3ff;
+
+            border-color: #2a5298;
+
+            font-weight: 500;
+
+        }
+
+ 
+
+        .answer-option.correct {
+
+            background: #d4edda;
+
+            border-color: #28a745;
+
+        }
+
+ 
+
+        .answer-option.wrong {
+
+            background: #f8d7da;
+
+            border-color: #dc3545;
+
+        }
+
+ 
+
+        .answer-option input[type="checkbox"] {
+
+            margin-right: 12px;
+
+            width: 20px;
+
+            height: 20px;
+
+            cursor: pointer;
+
+        }
+
+ 
+
+        .navigation {
+
+            display: flex;
+
+            justify-content: space-between;
+
+            margin-top: 25px;
+
+            gap: 15px;
+
+        }
+
+ 
+
+        .progress-bar {
+
+            background: #e9ecef;
+
+            height: 8px;
+
+            border-radius: 10px;
+
+            margin: 20px 0;
+
+            overflow: hidden;
+
+        }
+
+ 
+
+        .progress-fill {
+
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+
+            height: 100%;
+
+            transition: width 0.3s;
+
+        }
+
+ 
+
+        .result-screen {
+
+            display: none;
+
+            text-align: center;
+
+            padding: 40px 20px;
+
+        }
+
+ 
+
+        .result-score {
+
+            font-size: 72px;
+
+            font-weight: bold;
+
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+
+            -webkit-background-clip: text;
+
+            -webkit-text-fill-color: transparent;
+
+            background-clip: text;
+
+            margin: 20px 0;
+
+        }
+
+ 
+
+        .result-message {
+
+            font-size: 24px;
+
+            margin-bottom: 20px;
+
+            color: #1e3c72;
+
+        }
+
+ 
+
+        .result-details {
+
+            background: #f8f9fa;
+
+            border-radius: 15px;
+
+            padding: 25px;
+
+            margin: 20px 0;
+
+            text-align: left;
+
+        }
+
+ 
+
+        .result-row {
+
+            display: flex;
+
+            justify-content: space-between;
+
+            padding: 12px 0;
+
+            border-bottom: 1px solid #dee2e6;
+
+        }
+
+ 
+
+        .result-row:last-child {
+
+            border-bottom: none;
+
+        }
+
+ 
+
+        .explanation {
+
+            background: #fff3cd;
+
+            border-left: 4px solid #ffc107;
+
+            padding: 15px;
+
+            margin-top: 15px;
+
+            border-radius: 5px;
+
+            display: none;
+
+        }
+
+ 
+
+        .explanation.show {
+
+            display: block;
+
+        }
+
+ 
+
+        .explanation-title {
+
+            font-weight: bold;
+
+            color: #856404;
+
+            margin-bottom: 8px;
+
+        }
+
+ 
+
+        @media (max-width: 768px) {
+
+            .container {
+
+                margin: 10px;
+
+            }
+
+ 
+
+            .header h1 {
+
+                font-size: 22px;
+
+            }
+
+ 
+
+            .stats {
+
+                grid-template-columns: 1fr 1fr;
+
+                padding: 15px;
+
+            }
+
+ 
+
+            .content {
+
+                padding: 20px;
+
+            }
+
+ 
+
+            .navigation {
+
+                flex-direction: column;
+
+            }
+
+ 
+
+            .btn {
+
+                width: 100%;
+
+            }
+
+        }
+
+ 
+
+        .hidden {
+
+            display: none;
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <div class="container">
+
+        <div class="header">
+
+            <h1>Linux Essentials Certificate Exam 010-160 v1.6</h1>
+
+            <p>Prüfungssimulator - Offline nutzbar</p>
+
+        </div>
+
+ 
+
+        <div class="stats">
+
+            <div class="stat-box">
+
+                <div class="stat-label">Frage</div>
+
+                <div class="stat-value" id="current-question">-</div>
+
+            </div>
+
+            <div class="stat-box">
+
+                <div class="stat-label">Fortschritt</div>
+
+                <div class="stat-value" id="progress-percent">0%</div>
+
+            </div>
+
+            <div class="stat-box">
+
+                <div class="stat-label">Zeit</div>
+
+                <div class="stat-value timer" id="timer">60:00</div>
+
+            </div>
+
+            <div class="stat-box">
+
+                <div class="stat-label">Punkte</div>
+
+                <div class="stat-value" id="score-display">0/800</div>
+
+            </div>
+
+        </div>
+
+ 
+
+        <div class="content">
+
+            <!-- Start Screen -->
+
+            <div class="start-screen" id="start-screen">
+
+                <h2>Willkommen zum Linux Essentials Prüfungssimulator</h2>
+
+ 
+
+                <div class="info-box">
+
+                    <strong>Prüfungsdetails:</strong>
+
+                    <ul>
+
+                        <li>40 Fragen aus allen 5 Topics</li>
+
+                        <li>60 Minuten Prüfungszeit</li>
+
+                        <li>Bestehensgrenze: 500 von 800 Punkten (ca. 63%)</li>
+
+                        <li>Fragen werden nach offizieller Gewichtung ausgewählt</li>
+
+                        <li>Sofortige Auswertung mit Erklärungen</li>
+
+                    </ul>
+
+                </div>
+
+ 
+
+                <div class="info-box">
+
+                    <strong>Topic-Verteilung (gemäß LPI v1.6):</strong>
+
+                    <ul>
+
+                        <li>Topic 1: Linux-Community & Open Source (17.5%)</li>
+
+                        <li>Topic 2: Navigation im System (22.5%)</li>
+
+                        <li>Topic 3: Command Line Power (22.5%)</li>
+
+                        <li>Topic 4: Linux Operating System (20%)</li>
+
+                        <li>Topic 5: Security & Permissions (17.5%)</li>
+
+                    </ul>
+
+                </div>
+
+ 
+
+                <button class="btn" onclick="startExam()">Prüfung starten</button>
+
+                <button class="btn btn-secondary" onclick="exitQuiz()" style="margin-top: 15px;">Beenden</button>
+
+            </div>
+
+ 
+
+            <!-- Question Screen -->
+
+            <div class="question-container" id="question-container">
+
+                <div class="progress-bar">
+
+                    <div class="progress-fill" id="progress-bar"></div>
+
+                </div>
+
+ 
+
+                <div class="question-box" id="question-box">
+
+                    <!-- Questions will be loaded here -->
+
+                </div>
+
+ 
+
+                <div class="navigation">
+
+                    <button class="btn btn-secondary" onclick="previousQuestion()">← Zurück</button>
+
+                    <button class="btn" id="next-btn" onclick="nextQuestion()">Weiter →</button>
+
+                </div>
+
+            </div>
+
+ 
+
+            <!-- Result Screen -->
+
+            <div class="result-screen" id="result-screen">
+
+                <h2>Prüfung abgeschlossen!</h2>
+
+                <div class="result-score" id="final-score">0/800</div>
+
+                <div class="result-message" id="result-message"></div>
+
+ 
+
+                <div class="result-details" id="result-details">
+
+                    <!-- Results will be shown here -->
+
+                </div>
+
+ 
+
+                <button class="btn" onclick="reviewAnswers()">Antworten überprüfen</button>
+
+                <button class="btn btn-secondary" onclick="restartExam()">Neue Prüfung</button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+ 
+
+    <script>
+
+        // Question Database - Gewichtet nach LPI 010-160 v1.6
+
+        const questionDatabase = [
+
+            // TOPIC 1: Linux Community & Open Source (17.5% = 7 questions)
+
+            {
+
+                topic: "1.1 Linux Evolution",
+
+                question: "Wer hat den Linux-Kernel ursprünglich entwickelt?",
+
+                answers: [
+
+                    "Richard Stallman",
+
+                    "Linus Torvalds",
+
+                    "Dennis Ritchie",
+
+                    "Ken Thompson"
+
+                ],
+
+                correct: [1],
+
+                explanation: "Linus Torvalds begann 1991 mit der Entwicklung des Linux-Kernels als Student in Helsinki."
+
+            },
+
+            {
+
+                topic: "1.1 Linux Evolution",
+
+                question: "Welcher Befehl zeigt die aktuelle Linux-Distribution und Version an?",
+
+                answers: [
+
+                    "uname -a",
+
+                    "cat /etc/os-release",
+
+                    "linux --version",
+
+                    "distribution --info"
+
+                ],
+
+                correct: [1],
+
+                explanation: "Der Befehl 'cat /etc/os-release' zeigt detaillierte Informationen über die Distribution. 'uname -a' zeigt Kernel-Informationen."
+
+            },
+
+            {
+
+                topic: "1.1 Linux Evolution",
+
+                question: "Welche Distribution-Familie verwendet das .deb-Paketformat?",
+
+                answers: [
+
+                    "Red Hat Familie",
+
+                    "Debian Familie",
+
+                    "SUSE Familie",
+
+                    "Arch Familie"
+
+                ],
+
+                correct: [1],
+
+                explanation: "Debian und seine Derivate (Ubuntu, Linux Mint) verwenden .deb-Pakete und apt/dpkg."
+
+            },
+
+            {
+
+                topic: "1.2 Open Source Applications",
+
+                question: "Welcher Webserver ist am weitesten verbreitet in der Open-Source-Welt?",
+
+                answers: [
+
+                    "IIS",
+
+                    "Apache HTTP Server",
+
+                    "WebLogic",
+
+                    "WebSphere"
+
+                ],
+
+                correct: [1],
+
+                explanation: "Apache HTTP Server (httpd) und NGINX sind die dominierenden Open-Source-Webserver."
+
+            },
+
+            {
+
+                topic: "1.3 Open Source Licensing",
+
+                question: "Was bedeutet GPL (General Public License)?",
+
+                answers: [
+
+                    "Software darf nur kostenlos verteilt werden",
+
+                    "Änderungen müssen unter derselben Lizenz veröffentlicht werden",
+
+                    "Software darf nicht kommerziell genutzt werden",
+
+                    "Quellcode muss geheim bleiben"
+
+                ],
+
+                correct: [1],
+
+                explanation: "GPL ist eine Copyleft-Lizenz: Abgeleitete Werke müssen unter derselben Lizenz veröffentlicht werden."
+
+            },
+
+            {
+
+                topic: "1.3 Open Source Licensing",
+
+                question: "Welche der folgenden Lizenzen ist permissiv (nicht Copyleft)?",
+
+                answers: [
+
+                    "GPL",
+
+                    "MIT",
+
+                    "LGPL",
+
+                    "AGPL"
+
+                ],
+
+                correct: [1],
+
+                explanation: "MIT und BSD sind permissive Lizenzen mit minimalen Einschränkungen. GPL ist Copyleft."
+
+            },
+
+            {
+
+                topic: "1.4 ICT Skills",
+
+                question: "Welche Desktop-Umgebung wird standardmäßig bei Ubuntu verwendet?",
+
+                answers: [
+
+                    "KDE Plasma",
+
+                    "GNOME",
+
+                    "Xfce",
+
+                    "LXDE"
+
+                ],
+
+                correct: [1],
+
+                explanation: "Ubuntu verwendet standardmäßig GNOME als Desktop-Umgebung seit Version 17.10."
+
+            },
+
+            {
+
+                topic: "1.4 ICT Skills",
+
+                question: "Mit welcher Tastenkombination wechselt man zu einer virtuellen Konsole (tty)?",
+
+                answers: [
+
+                    "Alt + F1-F6",
+
+                    "Ctrl + Alt + F1-F6",
+
+                    "Ctrl + F1-F6",
+
+                    "Shift + F1-F6"
+
+                ],
+
+                correct: [1],
+
+                explanation: "Ctrl+Alt+F1 bis F6 wechselt zu virtuellen Konsolen. Ctrl+Alt+F7 kehrt zur grafischen Oberfläche zurück."
+
+            },
+
+ 
+
+            // TOPIC 2: Finding Your Way (22.5% = 9 questions)
+
+            {
+
+                topic: "2.1 Command Line Basics",
+
+                question: "Wie setzt man eine Umgebungsvariable für Kindprozesse?",
+
+                answers: [
+
+                    "set VARIABLE=value",
+
+                    "export VARIABLE=value",
+
+                    "env VARIABLE=value",
+
+                    "var VARIABLE=value"
+
+                ],
+
+                correct: [1],
+
+                explanation: "Der Befehl 'export' macht eine Variable für alle Kindprozesse verfügbar."
+
+            },
+
+            {
+
+                topic: "2.1 Command Line Basics",
+
+                question: "Was gibt der Befehl 'echo $PATH' aus?",
+
+                answers: [
+
+                    "Das aktuelle Verzeichnis",
+
+                    "Die Suchpfade für ausführbare Dateien",
+
+                    "Den Pfad zur Home-Directory",
+
+                    "Alle installierten Programme"
+
+                ],
+
+                correct: [1],
+
+                explanation: "$PATH enthält durch Doppelpunkt getrennte Verzeichnisse, in denen nach ausführbaren Befehlen gesucht wird."
+
+            },
+
+            {
+
+                topic: "2.1 Command Line Basics",
+
+                question: "Welcher Befehl zeigt den Typ eines Befehls an (alias, builtin, file)?",
+
+                answers: [
+
+                    "which",
+
+                    "type",
+
+                    "whereis",
+
+                    "locate"
+
+                ],
+
+                correct: [1],
+
+                explanation: "'type command' zeigt, ob ein Befehl ein Alias, Shell-Builtin oder externes Programm ist."
+
+            },
+
+            {
+
+                topic: "2.2 Getting Help",
+
+                question: "Mit welchem Befehl durchsucht man die Man-Pages nach einem Stichwort?",
+
+                answers: [
+
+                    "man -s keyword",
+
+                    "man -k keyword",
+
+                    "man -f keyword",
+
+                    "man -w keyword"
+
+                ],
+
+                correct: [1],
+
+                explanation: "'man -k' (oder 'apropos') durchsucht die Kurzbeschreibungen aller Man-Pages nach dem Stichwort."
+
+            },
+
+            {
+
+                topic: "2.2 Getting Help",
+
+                question: "In welcher Man-Page Sektion findet man Systemaufrufe?",
+
+                answers: [
+
+                    "Sektion 1",
+
+                    "Sektion 2",
+
+                    "Sektion 5",
+
+                    "Sektion 8"
+
+                ],
+
+                correct: [1],
+
+                explanation: "Man-Page Sektionen: 1=Benutzerbefehle, 2=Systemaufrufe, 3=C-Bibliotheken, 5=Dateiformate, 8=Systemverwaltung."
+
+            },
+
+            {
+
+                topic: "2.3 Directories and Listing",
+
+                question: "Was bewirkt der Befehl 'cd -'?",
+
+                answers: [
+
+                    "Wechselt zum Root-Verzeichnis",
+
+                    "Wechselt zum vorherigen Verzeichnis",
+
+                    "Wechselt zum Home-Verzeichnis",
+
+                    "Wechselt eine Ebene nach oben"
+
+                ],
+
+                correct: [1],
+
+                explanation: "'cd -' wechselt zum zuletzt besuchten Verzeichnis und zeigt dessen Pfad an."
+
+            },
+
+            {
+
+                topic: "2.3 Directories and Listing",
+
+                question: "Welche Option von 'ls' zeigt versteckte Dateien an?",
+
+                answers: [
+
+                    "ls -h",
+
+                    "ls -a",
+
+                    "ls -l",
+
+                    "ls -r"
+
+                ],
+
+                correct: [1],
+
+                explanation: "'ls -a' zeigt alle Dateien einschließlich versteckter Dateien (die mit . beginnen)."
+
+            },
+
+            {
+
+                topic: "2.4 Creating/Moving Files",
+
+                question: "Welcher Befehl kopiert rekursiv ein ganzes Verzeichnis?",
+
+                answers: [
+
+                    "cp directory newdir",
+
+                    "cp -r directory newdir",
+
+                    "copy -R directory newdir",
+
+                    "cp -a directory newdir"
+
+                ],
+
+                correct: [1],
+
+                explanation: "'cp -r' (oder 'cp -R') kopiert rekursiv Verzeichnisse. 'cp -a' ist ähnlich, behält aber zusätzlich alle Attribute."
+
+            },
+
+            {
+
+                topic: "2.4 Creating/Moving Files",
+
+                question: "Was bewirkt das Wildcard-Muster '?.txt'?",
+
+                answers: [
+
+                    "Alle Dateien die mit .txt enden",
+
+                    "Dateien mit genau einem Zeichen vor .txt",
+
+                    "Alle versteckten .txt Dateien",
+
+                    "Keine Dateien"
+
+                ],
+
+                correct: [1],
+
+                explanation: "'?' steht für genau ein beliebiges Zeichen. '?.txt' findet z.B. 'a.txt' aber nicht 'ab.txt'."
+
+            },
+
+ 
+
+            // TOPIC 3: Power of Command Line (22.5% = 9 questions)
+
+            {
+
+                topic: "3.1 Archiving Files",
+
+                question: "Welcher Befehl erstellt ein komprimiertes tar-Archiv mit gzip?",
+
+                answers: [
+
+                    "tar -cf archive.tar.gz files/",
+
+                    "tar -czf archive.tar.gz files/",
+
+                    "tar -xzf archive.tar.gz files/",
+
+                    "gzip -c archive.tar files/"
+
+                ],
+
+                correct: [1],
+
+                explanation: "'tar -czf' erstellt (c) ein gzip-komprimiertes (z) Archiv. Die Option -f gibt den Dateinamen an."
+
+            },
+
+            {
+
+                topic: "3.1 Archiving Files",
+
+                question: "Wie extrahiert man ein .tar.bz2 Archiv?",
+
+                answers: [
+
+                    "tar -xzf archive.tar.bz2",
+
+                    "tar -xjf archive.tar.bz2",
+
+                    "bunzip2 archive.tar.bz2",
+
+                    "tar -xf archive.tar.bz2"
+
+                ],
+
+                correct: [1],
+
+                explanation: "'tar -xjf' extrahiert (x) bzip2-komprimierte (j) Archive. Option -z ist für gzip, -j für bzip2."
+
+            },
+
+            {
+
+                topic: "3.1 Archiving Files",
+
+                question: "Was ist der Unterschied zwischen tar und gzip?",
+
+                answers: [
+
+                    "Es gibt keinen Unterschied",
+
+                    "tar archiviert, gzip komprimiert",
+
+                    "gzip ist schneller",
+
+                    "tar ist nur für Linux"
+
+                ],
+
+                correct: [1],
+
+                explanation: "tar bündelt Dateien zu einem Archiv, komprimiert aber nicht. gzip/bzip2/xz komprimieren Dateien."
+
+            },
+
+            {
+
+                topic: "3.2 Searching and Extracting",
+
+                question: "Was bewirkt der Redirect '2>&1'?",
+
+                answers: [
+
+                    "Leitet STDOUT nach STDERR",
+
+                    "Leitet STDERR nach STDOUT",
+
+                    "Leitet beide nach /dev/null",
+
+                    "Leitet STDIN nach STDOUT"
+
+                ],
+
+                correct: [1],
+
+                explanation: "'2>&1' leitet STDERR (2) zu STDOUT (1). Nützlich für: command > file 2>&1"
+
+            },
+
+            {
+
+                topic: "3.2 Searching and Extracting",
+
+                question: "Welcher Befehl zeigt die ersten 20 Zeilen einer Datei?",
+
+                answers: [
+
+                    "tail -n 20 file",
+
+                    "head -n 20 file",
+
+                    "cat -n 20 file",
+
+                    "less -n 20 file"
+
+                ],
+
+                correct: [1],
+
+                explanation: "'head -n 20' zeigt die ersten 20 Zeilen. 'tail -n 20' zeigt die letzten 20 Zeilen."
+
+            },
+
+            {
+
+                topic: "3.2 Searching and Extracting",
+
+                question: "Was macht 'grep -v pattern file'?",
+
+                answers: [
+
+                    "Zeigt Zeilen mit dem Muster",
+
+                    "Zeigt Zeilen OHNE das Muster",
+
+                    "Zählt die Treffer",
+
+                    "Zeigt Zeilennummern"
+
+                ],
+
+                correct: [1],
+
+                explanation: "'grep -v' invertiert die Suche und zeigt alle Zeilen, die NICHT dem Muster entsprechen."
+
+            },
+
+            {
+
+                topic: "3.2 Searching and Extracting",
+
+                question: "Wie extrahiert man das erste Feld aus /etc/passwd (Benutzernamen)?",
+
+                answers: [
+
+                    "cut -d: -f1 /etc/passwd",
+
+                    "cut -f1 /etc/passwd",
+
+                    "awk -d: '{print $1}' /etc/passwd",
+
+                    "grep -f1 /etc/passwd"
+
+                ],
+
+                correct: [0],
+
+                explanation: "'cut -d: -f1' verwendet Doppelpunkt als Delimiter (-d:) und extrahiert Feld 1 (-f1)."
+
+            },
+
+            {
+
+                topic: "3.3 Shell Scripting",
+
+                question: "Was muss die erste Zeile eines Bash-Scripts sein?",
+
+                answers: [
+
+                    "# Bash Script",
+
+                    "#!/bin/bash",
+
+                    "!#/bin/bash",
+
+                    "<bash>"
+
+                ],
+
+                correct: [1],
+
+                explanation: "Der Shebang '#!/bin/bash' muss die erste Zeile sein und gibt den Interpreter an."
+
+            },
+
+            {
+
+                topic: "3.3 Shell Scripting",
+
+                question: "Was ist in einem Script der Wert von $1?",
+
+                answers: [
+
+                    "Der Script-Name",
+
+                    "Das erste Argument",
+
+                    "Die Anzahl der Argumente",
+
+                    "Der Exit-Status"
+
+                ],
+
+                correct: [1],
+
+                explanation: "$0=Script-Name, $1=erstes Argument, $2=zweites Argument, $#=Anzahl Argumente, $?=Exit-Status."
+
+            },
+
+ 
+
+            // TOPIC 4: Linux Operating System (20% = 8 questions)
+
+            {
+
+                topic: "4.1 Choosing an OS",
+
+                question: "Was bedeutet LTS bei Ubuntu?",
+
+                answers: [
+
+                    "Linux Terminal System",
+
+                    "Long Term Support",
+
+                    "Latest Technology Stack",
+
+                    "Linux Test Suite"
+
+                ],
+
+                correct: [1],
+
+                explanation: "LTS (Long Term Support) Versionen werden 5 Jahre unterstützt und sind für Produktivumgebungen gedacht."
+
+            },
+
+            {
+
+                topic: "4.2 Computer Hardware",
+
+                question: "Wie heißt die erste SATA-Festplatte in Linux?",
+
+                answers: [
+
+                    "/dev/hda",
+
+                    "/dev/sda",
+
+                    "/dev/sda1",
+
+                    "/dev/disk1"
+
+                ],
+
+                correct: [1],
+
+                explanation: "SATA/SCSI-Festplatten heißen /dev/sda, /dev/sdb, etc. Partitionen: /dev/sda1, /dev/sda2, etc."
+
+            },
+
+            {
+
+                topic: "4.2 Computer Hardware",
+
+                question: "Was ist /dev/null?",
+
+                answers: [
+
+                    "Eine leere Datei",
+
+                    "Ein Device das alle Daten verwirft",
+
+                    "Eine Null-Partition",
+
+                    "Ein Netzwerk-Device"
+
+                ],
+
+                correct: [1],
+
+                explanation: "/dev/null ist ein spezielles Device, das alle hineingeschriebenen Daten verwirft. Nützlich für: command > /dev/null"
+
+            },
+
+            {
+
+                topic: "4.3 Where Data is Stored",
+
+                question: "Wo befinden sich Systemkonfigurationsdateien?",
+
+                answers: [
+
+                    "/var",
+
+                    "/etc",
+
+                    "/usr",
+
+                    "/opt"
+
+                ],
+
+                correct: [1],
+
+                explanation: "/etc enthält Systemkonfigurationsdateien. /var enthält variable Daten, /usr Benutzerprogramme."
+
+            },
+
+            {
+
+                topic: "4.3 Where Data is Stored",
+
+                question: "Wo werden System-Logdateien gespeichert?",
+
+                answers: [
+
+                    "/tmp/log",
+
+                    "/var/log",
+
+                    "/etc/log",
+
+                    "/usr/log"
+
+                ],
+
+                correct: [1],
+
+                explanation: "/var/log enthält alle System- und Anwendungs-Logdateien wie syslog, auth.log, etc."
+
+            },
+
+            {
+
+                topic: "4.3 Where Data is Stored",
+
+                question: "Welcher Befehl zeigt alle laufenden Prozesse an?",
+
+                answers: [
+
+                    "ls -p",
+
+                    "ps aux",
+
+                    "proc -a",
+
+                    "show processes"
+
+                ],
+
+                correct: [1],
+
+                explanation: "'ps aux' zeigt alle Prozesse aller Benutzer mit Details. 'top' zeigt sie interaktiv."
+
+            },
+
+            {
+
+                topic: "4.4 Computer on Network",
+
+                question: "Welcher moderne Befehl ersetzt 'ifconfig'?",
+
+                answers: [
+
+                    "netconfig",
+
+                    "ip addr",
+
+                    "network -i",
+
+                    "ipconfig"
+
+                ],
+
+                correct: [1],
+
+                explanation: "'ip addr' (oder 'ip a') ist der moderne Ersatz für 'ifconfig' zur Netzwerkkonfiguration."
+
+            },
+
+            {
+
+                topic: "4.4 Computer on Network",
+
+                question: "Wo werden DNS-Server konfiguriert?",
+
+                answers: [
+
+                    "/etc/hosts",
+
+                    "/etc/resolv.conf",
+
+                    "/etc/dns.conf",
+
+                    "/var/dns"
+
+                ],
+
+                correct: [1],
+
+                explanation: "/etc/resolv.conf enthält DNS-Server. /etc/hosts enthält statische Host-zu-IP-Zuordnungen."
+
+            },
+
+ 
+
+            // TOPIC 5: Security and File Permissions (17.5% = 7 questions)
+
+            {
+
+                topic: "5.1 Basic Security",
+
+                question: "Welche UID hat der root-Benutzer?",
+
+                answers: [
+
+                    "-1",
+
+                    "0",
+
+                    "1",
+
+                    "1000"
+
+                ],
+
+                correct: [1],
+
+                explanation: "root hat immer UID 0. Normale Benutzer haben UID ≥ 1000, System-Benutzer < 1000."
+
+            },
+
+            {
+
+                topic: "5.1 Basic Security",
+
+                question: "Wo werden verschlüsselte Passwörter gespeichert?",
+
+                answers: [
+
+                    "/etc/passwd",
+
+                    "/etc/shadow",
+
+                    "/etc/password",
+
+                    "/var/passwd"
+
+                ],
+
+                correct: [1],
+
+                explanation: "/etc/shadow enthält verschlüsselte Passwörter (nur root-lesbar). /etc/passwd enthält Benutzerinfo."
+
+            },
+
+            {
+
+                topic: "5.2 Creating Users",
+
+                question: "Welcher Befehl erstellt einen Benutzer mit Home-Verzeichnis?",
+
+                answers: [
+
+                    "useradd username",
+
+                    "useradd -m username",
+
+                    "adduser username",
+
+                    "user create username"
+
+                ],
+
+                correct: [1],
+
+                explanation: "'useradd -m username' erstellt einen Benutzer und legt das Home-Verzeichnis an."
+
+            },
+
+            {
+
+                topic: "5.3 File Permissions",
+
+                question: "Was bedeutet 'chmod 755 file'?",
+
+                answers: [
+
+                    "rwxrwxrwx",
+
+                    "rwxr-xr-x",
+
+                    "rw-r--r--",
+
+                    "r-xr-xr-x"
+
+                ],
+
+                correct: [1],
+
+                explanation: "755 = rwxr-xr-x (Owner: rwx=7, Group: r-x=5, Others: r-x=5). Berechnung: r=4, w=2, x=1."
+
+            },
+
+            {
+
+                topic: "5.3 File Permissions",
+
+                question: "Wie ändert man den Besitzer einer Datei?",
+
+                answers: [
+
+                    "chmod user file",
+
+                    "chown user file",
+
+                    "owner user file",
+
+                    "setowner user file"
+
+                ],
+
+                correct: [1],
+
+                explanation: "'chown user:group file' ändert Owner und Gruppe. 'chmod' ändert nur Permissions."
+
+            },
+
+            {
+
+                topic: "5.4 Special Permissions",
+
+                question: "Was bedeutet das Sticky Bit auf einem Verzeichnis?",
+
+                answers: [
+
+                    "Niemand kann Dateien löschen",
+
+                    "Nur der Owner kann eigene Dateien löschen",
+
+                    "Das Verzeichnis ist schreibgeschützt",
+
+                    "Alle Dateien werden ausführbar"
+
+                ],
+
+                correct: [1],
+
+                explanation: "Sticky Bit (chmod +t oder 1777) auf /tmp: Nur der Datei-Owner kann seine eigenen Dateien löschen."
+
+            },
+
+            {
+
+                topic: "5.4 Special Permissions",
+
+                question: "Was ist SUID (Set User ID)?",
+
+                answers: [
+
+                    "Datei läuft mit Root-Rechten",
+
+                    "Datei läuft mit Rechten des Datei-Owners",
+
+                    "Datei ist nur für einen User sichtbar",
+
+                    "User ID wird in der Datei gespeichert"
+
+                ],
+
+                correct: [1],
+
+                explanation: "SUID (chmod u+s oder 4755): Datei läuft mit Rechten des Owners. Beispiel: /usr/bin/passwd."
+
+            },
+
+ 
+
+            // Zusätzliche wichtige Fragen für bessere Abdeckung
+
+            {
+
+                topic: "2.1 Command Line Basics",
+
+                question: "Wie wird eine Variable in der Shell OHNE Leerzeichen gesetzt?",
+
+                answers: [
+
+                    "VARIABLE = value",
+
+                    "VARIABLE=value",
+
+                    "set VARIABLE = value",
+
+                    "$VARIABLE=value"
+
+                ],
+
+                correct: [1],
+
+                explanation: "Variablen werden OHNE Leerzeichen gesetzt: VAR=value. Mit Leerzeichen gibt es einen Fehler!"
+
+            },
+
+            {
+
+                topic: "3.3 Shell Scripting",
+
+                question: "Wie macht man ein Script ausführbar?",
+
+                answers: [
+
+                    "chmod +x script.sh",
+
+                    "execute script.sh",
+
+                    "run script.sh",
+
+                    "bash script.sh"
+
+                ],
+
+                correct: [0],
+
+                explanation: "'chmod +x script.sh' gibt Execute-Permission. Dann kann es mit './script.sh' ausgeführt werden."
+
+            },
+
+            {
+
+                topic: "3.3 Shell Scripting",
+
+                question: "Was gibt $? zurück?",
+
+                answers: [
+
+                    "Prozess-ID",
+
+                    "Exit-Status des letzten Befehls",
+
+                    "Anzahl der Argumente",
+
+                    "Aktueller Benutzer"
+
+                ],
+
+                correct: [1],
+
+                explanation: "$? enthält den Exit-Status des letzten Befehls. 0 = Erfolg, Non-zero = Fehler."
+
+            },
+
+            {
+
+                topic: "3.3 Shell Scripting",
+
+                question: "Welche Syntax ist korrekt für eine for-Schleife?",
+
+                answers: [
+
+                    "for i in 1 2 3; do echo $i; done",
+
+                    "for (i=1; i<3; i++) echo $i",
+
+                    "for i = 1 to 3 do echo $i",
+
+                    "foreach i in 1 2 3 echo $i"
+
+                ],
+
+                correct: [0],
+
+                explanation: "Bash for-Loop Syntax: for VAR in LIST; do BEFEHLE; done"
+
+            },
+
+            {
+
+                topic: "4.3 Where Data is Stored",
+
+                question: "Was ist /proc in Linux?",
+
+                answers: [
+
+                    "Ein normales Verzeichnis",
+
+                    "Ein virtuelles Dateisystem für Prozessinformationen",
+
+                    "Ein Backup-Verzeichnis",
+
+                    "Ein Log-Verzeichnis"
+
+                ],
+
+                correct: [1],
+
+                explanation: "/proc ist ein virtuelles Dateisystem, das Prozess- und Kernel-Informationen enthält."
+
+            },
+
+            {
+
+                topic: "3.2 Searching and Extracting",
+
+                question: "Was macht 'tail -f /var/log/syslog'?",
+
+                answers: [
+
+                    "Zeigt die ersten Zeilen",
+
+                    "Zeigt die letzten Zeilen und folgt neuen Einträgen",
+
+                    "Filtert die Datei",
+
+                    "Löscht alte Einträge"
+
+                ],
+
+                correct: [1],
+
+                explanation: "'tail -f' zeigt die letzten Zeilen und aktualisiert sich kontinuierlich bei neuen Einträgen (follow)."
+
+            },
+
+            {
+
+                topic: "2.3 Directories and Listing",
+
+                question: "Was zeigt 'ls -l' in der ersten Spalte?",
+
+                answers: [
+
+                    "Dateigröße",
+
+                    "Dateityp und Permissions",
+
+                    "Erstellungsdatum",
+
+                    "Besitzer"
+
+                ],
+
+                correct: [1],
+
+                explanation: "'ls -l' erste Spalte: Dateityp (- = Datei, d = Verzeichnis) + 9 Permission-Zeichen (rwxrwxrwx)."
+
+            },
+
+            {
+
+                topic: "1.2 Open Source Applications",
+
+                question: "Welches ist eine Open-Source Datenbank?",
+
+                answers: [
+
+                    "Oracle Database",
+
+                    "MariaDB",
+
+                    "Microsoft SQL Server",
+
+                    "DB2"
+
+                ],
+
+                correct: [1],
+
+                explanation: "MariaDB und MySQL sind die verbreitetsten Open-Source-Datenbanken. PostgreSQL ist ebenfalls populär."
+
+            },
+
+            {
+
+                topic: "5.3 File Permissions",
+
+                question: "Was bedeutet 'chmod 644 file'?",
+
+                answers: [
+
+                    "rwxrwxrwx",
+
+                    "rw-r--r--",
+
+                    "r--r--r--",
+
+                    "rwxr-xr-x"
+
+                ],
+
+                correct: [1],
+
+                explanation: "644 = rw-r--r-- (Owner: rw-=6, Group: r--=4, Others: r--=4). Standard für normale Dateien."
+
+            },
+
+            {
+
+                topic: "4.4 Computer on Network",
+
+                question: "Mit welchem Befehl testet man die Erreichbarkeit eines Hosts?",
+
+                answers: [
+
+                    "test host",
+
+                    "ping host",
+
+                    "connect host",
+
+                    "reach host"
+
+                ],
+
+                correct: [1],
+
+                explanation: "'ping host' sendet ICMP Echo Requests und testet die Netzwerk-Erreichbarkeit."
+
+            },
+
+            {
+
+                topic: "2.4 Creating/Moving Files",
+
+                question: "Was ist der Unterschied zwischen 'rm' und 'rmdir'?",
+
+                answers: [
+
+                    "Kein Unterschied",
+
+                    "rmdir löscht nur leere Verzeichnisse",
+
+                    "rm ist sicherer",
+
+                    "rmdir braucht sudo"
+
+                ],
+
+                correct: [1],
+
+                explanation: "'rmdir' löscht NUR leere Verzeichnisse. 'rm -r' löscht rekursiv auch gefüllte Verzeichnisse."
+
+            },
+
+            {
+
+                topic: "3.2 Searching and Extracting",
+
+                question: "Wie zählt man die Anzahl Zeilen in einer Datei?",
+
+                answers: [
+
+                    "count file",
+
+                    "wc -l file",
+
+                    "lines file",
+
+                    "cat -n file"
+
+                ],
+
+                correct: [1],
+
+                explanation: "'wc -l' zählt Zeilen, 'wc -w' zählt Wörter, 'wc -c' zählt Bytes."
+
+            },
+
+            {
+
+                topic: "3.2 Searching and Extracting",
+
+                question: "Was macht der Pipe-Operator '|'?",
+
+                answers: [
+
+                    "Verkettet Dateien",
+
+                    "Leitet STDOUT des ersten Befehls zu STDIN des zweiten",
+
+                    "Führt Befehle parallel aus",
+
+                    "Kommentiert Code"
+
+                ],
+
+                correct: [1],
+
+                explanation: "Pipe '|' verbindet Befehle: STDOUT von links wird zu STDIN von rechts. Beispiel: cat file | grep pattern"
+
+            },
+
+            {
+
+                topic: "5.2 Creating Users",
+
+                question: "Welches Verzeichnis enthält die Vorlage für neue Home-Verzeichnisse?",
+
+                answers: [
+
+                    "/etc/home",
+
+                    "/etc/skel",
+
+                    "/home/template",
+
+                    "/usr/template"
+
+                ],
+
+                correct: [1],
+
+                explanation: "/etc/skel/ enthält Dateien, die in jedes neue Home-Verzeichnis kopiert werden (z.B. .bashrc)."
+
+            },
+
+            {
+
+                topic: "1.1 Linux Evolution",
+
+                question: "Welche Paketmanager verwenden Red Hat basierte Systeme?",
+
+                answers: [
+
+                    "apt und dpkg",
+
+                    "rpm und yum",
+
+                    "pacman",
+
+                    "emerge"
+
+                ],
+
+                correct: [1],
+
+                explanation: "Red Hat Familie (RHEL, CentOS, Fedora) verwenden rpm-Pakete und yum/dnf Paketmanager."
+
+            },
+
+            {
+
+                topic: "4.3 Where Data is Stored",
+
+                question: "Wo befindet sich das Home-Verzeichnis des root-Benutzers?",
+
+                answers: [
+
+                    "/home/root",
+
+                    "/root",
+
+                    "/",
+
+                    "/etc/root"
+
+                ],
+
+                correct: [1],
+
+                explanation: "root's Home ist /root, nicht /home/root. Normale Benutzer haben /home/username."
+
+            },
+
+            {
+
+                topic: "3.1 Archiving Files",
+
+                question: "Wie zeigt man den Inhalt eines tar-Archivs an OHNE zu extrahieren?",
+
+                answers: [
+
+                    "tar -xf archive.tar",
+
+                    "tar -tf archive.tar",
+
+                    "tar -cf archive.tar",
+
+                    "cat archive.tar"
+
+                ],
+
+                correct: [1],
+
+                explanation: "'tar -tf' listet den Inhalt auf (t = list). -x würde extrahieren, -c würde erstellen."
+
+            },
+
+            {
+
+                topic: "2.2 Getting Help",
+
+                question: "Was macht 'whatis command'?",
+
+                answers: [
+
+                    "Zeigt die Man-Page",
+
+                    "Zeigt eine einzeilige Beschreibung",
+
+                    "Zeigt den Speicherort",
+
+                    "Zeigt alle Optionen"
+
+                ],
+
+                correct: [1],
+
+                explanation: "'whatis' zeigt eine kurze einzeilige Beschreibung. 'man' zeigt die vollständige Man-Page."
+
+            },
+
+            {
+
+                topic: "5.1 Basic Security",
+
+                question: "Was macht 'sudo command'?",
+
+                answers: [
+
+                    "Wechselt zu root",
+
+                    "Führt einen Befehl als root aus",
+
+                    "Ändert das Passwort",
+
+                    "Zeigt Benutzerinfo"
+
+                ],
+
+                correct: [1],
+
+                explanation: "'sudo command' führt einen einzelnen Befehl mit root-Rechten aus. 'su' wechselt komplett zu root."
+
+            }
+
+        ];
+
+ 
+
+        // Exam state
+
+        let currentExam = [];
+
+        let currentQuestionIndex = 0;
+
+        let userAnswers = [];
+
+        let timerInterval = null;
+
+        let timeRemaining = 3600; // 60 minutes in seconds
+
+        let examStartTime = null;
+
+ 
+
+        // Generate weighted exam (40 questions according to LPI weights)
+
+        function generateExam() {
+
+            const weights = {
+
+                '1.': 7,  // Topic 1: 17.5%
+
+                '2.': 9,  // Topic 2: 22.5%
+
+                '3.': 9,  // Topic 3: 22.5%
+
+                '4.': 8,  // Topic 4: 20%
+
+                '5.': 7   // Topic 5: 17.5%
+
+            };
+
+ 
+
+            let exam = [];
+
+ 
+
+            for (let topic in weights) {
+
+                let topicQuestions = questionDatabase.filter(q => q.topic.startsWith(topic));
+
+                let count = weights[topic];
+
+ 
+
+                // Shuffle and take required number
+
+                let shuffled = topicQuestions.sort(() => 0.5 - Math.random());
+
+                exam.push(...shuffled.slice(0, count));
+
+            }
+
+ 
+
+            // Shuffle the final exam
+
+            return exam.sort(() => 0.5 - Math.random());
+
+        }
+
+ 
+
+        function startExam() {
+
+            currentExam = generateExam();
+
+            userAnswers = new Array(currentExam.length).fill(null);
+
+            currentQuestionIndex = 0;
+
+            timeRemaining = 3600;
+
+            examStartTime = Date.now();
+
+ 
+
+            document.getElementById('start-screen').style.display = 'none';
+
+            document.getElementById('question-container').style.display = 'block';
+
+ 
+
+            startTimer();
+
+            showQuestion();
+
+        }
+
+ 
+
+        function startTimer() {
+
+            timerInterval = setInterval(() => {
+
+                timeRemaining--;
+
+                updateTimerDisplay();
+
+ 
+
+                if (timeRemaining <= 0) {
+
+                    clearInterval(timerInterval);
+
+                    finishExam();
+
+                }
+
+            }, 1000);
+
+        }
+
+ 
+
+        function updateTimerDisplay() {
+
+            const minutes = Math.floor(timeRemaining / 60);
+
+            const seconds = timeRemaining % 60;
+
+            document.getElementById('timer').textContent =
+
+                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+
+        }
+
+ 
+
+        function showQuestion() {
+
+            const question = currentExam[currentQuestionIndex];
+
+            const questionBox = document.getElementById('question-box');
+
+ 
+
+            let html = `
+
+                <div class="question-number">Frage ${currentQuestionIndex + 1} von ${currentExam.length}</div>
+
+                <div class="topic-badge">${question.topic}</div>
+
+                <div class="question-text">${question.question}</div>
+
+                <div class="answers">
+
+            `;
+
+ 
+
+            question.answers.forEach((answer, index) => {
+
+                const isSelected = userAnswers[currentQuestionIndex]?.includes(index);
+
+                html += `
+
+                    <div class="answer-option ${isSelected ? 'selected' : ''}" onclick="selectAnswer(${index})">
+
+                        <input type="checkbox" ${isSelected ? 'checked' : ''} onchange="selectAnswer(${index})">
+
+                        ${answer}
+
+                    </div>
+
+                `;
+
+            });
+
+ 
+
+            html += `</div>`;
+
+            questionBox.innerHTML = html;
+
+ 
+
+            updateProgress();
+
+            updateNextButton();
+
+        }
+
+ 
+
+        function selectAnswer(answerIndex) {
+
+            if (!userAnswers[currentQuestionIndex]) {
+
+                userAnswers[currentQuestionIndex] = [];
+
+            }
+
+ 
+
+            const answers = userAnswers[currentQuestionIndex];
+
+            const index = answers.indexOf(answerIndex);
+
+ 
+
+            if (index > -1) {
+
+                answers.splice(index, 1);
+
+            } else {
+
+                answers.push(answerIndex);
+
+            }
+
+ 
+
+            showQuestion();
+
+        }
+
+ 
+
+        function updateProgress() {
+
+            const progress = ((currentQuestionIndex + 1) / currentExam.length) * 100;
+
+            document.getElementById('progress-bar').style.width = progress + '%';
+
+            document.getElementById('current-question').textContent = `${currentQuestionIndex + 1}/${currentExam.length}`;
+
+            document.getElementById('progress-percent').textContent = Math.round(progress) + '%';
+
+        }
+
+ 
+
+        function updateNextButton() {
+
+            const btn = document.getElementById('next-btn');
+
+            if (currentQuestionIndex === currentExam.length - 1) {
+
+                btn.textContent = 'Prüfung beenden';
+
+                btn.onclick = finishExam;
+
+            } else {
+
+                btn.textContent = 'Weiter →';
+
+                btn.onclick = nextQuestion;
+
+            }
+
+        }
+
+ 
+
+        function previousQuestion() {
+
+            if (currentQuestionIndex > 0) {
+
+                currentQuestionIndex--;
+
+                showQuestion();
+
+            }
+
+        }
+
+ 
+
+        function nextQuestion() {
+
+            if (currentQuestionIndex < currentExam.length - 1) {
+
+                currentQuestionIndex++;
+
+                showQuestion();
+
+            }
+
+        }
+
+ 
+
+        function finishExam() {
+
+            clearInterval(timerInterval);
+
+ 
+
+            // Calculate score
+
+            let correctCount = 0;
+
+            currentExam.forEach((question, index) => {
+
+                const userAns = userAnswers[index] || [];
+
+                const correctAns = question.correct;
+
+ 
+
+                if (JSON.stringify(userAns.sort()) === JSON.stringify(correctAns.sort())) {
+
+                    correctCount++;
+
+                }
+
+            });
+
+ 
+
+            const score = Math.round((correctCount / currentExam.length) * 800);
+
+            const passed = score >= 500;
+
+            const percentage = Math.round((correctCount / currentExam.length) * 100);
+
+ 
+
+            // Show results
+
+            document.getElementById('question-container').style.display = 'none';
+
+            document.getElementById('result-screen').style.display = 'block';
+
+ 
+
+            document.getElementById('final-score').textContent = `${score}/800`;
+
+            document.getElementById('result-message').innerHTML = passed
+
+                ? `<span style="color: #28a745;">🎉 Bestanden! Herzlichen Glückwunsch!</span>`
+
+                : `<span style="color: #dc3545;">Nicht bestanden. Weiter üben!</span>`;
+
+ 
+
+            const timeTaken = Math.round((Date.now() - examStartTime) / 1000);
+
+            const minutesTaken = Math.floor(timeTaken / 60);
+
+            const secondsTaken = timeTaken % 60;
+
+ 
+
+            document.getElementById('result-details').innerHTML = `
+
+                <div class="result-row">
+
+                    <span>Richtige Antworten:</span>
+
+                    <strong>${correctCount} von ${currentExam.length} (${percentage}%)</strong>
+
+                </div>
+
+                <div class="result-row">
+
+                    <span>Erreichte Punktzahl:</span>
+
+                    <strong>${score}/800</strong>
+
+                </div>
+
+                <div class="result-row">
+
+                    <span>Bestehensgrenze:</span>
+
+                    <strong>500/800 (63%)</strong>
+
+                </div>
+
+                <div class="result-row">
+
+                    <span>Benötigte Zeit:</span>
+
+                    <strong>${minutesTaken}:${secondsTaken.toString().padStart(2, '0')}</strong>
+
+                </div>
+
+                <div class="result-row">
+
+                    <span>Status:</span>
+
+                    <strong style="color: ${passed ? '#28a745' : '#dc3545'}">${passed ? 'BESTANDEN ✓' : 'NICHT BESTANDEN ✗'}</strong>
+
+                </div>
+
+            `;
+
+ 
+
+            document.getElementById('score-display').textContent = `${score}/800`;
+
+        }
+
+ 
+
+        function reviewAnswers() {
+
+            currentQuestionIndex = 0;
+
+            document.getElementById('result-screen').style.display = 'none';
+
+            document.getElementById('question-container').style.display = 'block';
+
+ 
+
+            showReviewQuestion();
+
+        }
+
+ 
+
+        function showReviewQuestion() {
+
+            const question = currentExam[currentQuestionIndex];
+
+            const questionBox = document.getElementById('question-box');
+
+            const userAns = userAnswers[currentQuestionIndex] || [];
+
+            const correctAns = question.correct;
+
+ 
+
+            let html = `
+
+                <div class="question-number">Frage ${currentQuestionIndex + 1} von ${currentExam.length} - Überprüfung</div>
+
+                <div class="topic-badge">${question.topic}</div>
+
+                <div class="question-text">${question.question}</div>
+
+                <div class="answers">
+
+            `;
+
+ 
+
+            question.answers.forEach((answer, index) => {
+
+                const isUserAnswer = userAns.includes(index);
+
+                const isCorrect = correctAns.includes(index);
+
+ 
+
+                let className = '';
+
+                if (isCorrect) className = 'correct';
+
+                else if (isUserAnswer && !isCorrect) className = 'wrong';
+
+ 
+
+                html += `
+
+                    <div class="answer-option ${className}">
+
+                        <input type="checkbox" ${isUserAnswer ? 'checked' : ''} disabled>
+
+                        ${answer}
+
+                        ${isCorrect ? ' ✓' : ''}
+
+                    </div>
+
+                `;
+
+            });
+
+ 
+
+            html += `</div>`;
+
+            html += `
+
+                <div class="explanation show">
+
+                    <div class="explanation-title">Erklärung:</div>
+
+                    ${question.explanation}
+
+                </div>
+
+            `;
+
+ 
+
+            questionBox.innerHTML = html;
+
+            updateProgress();
+
+ 
+
+            const btn = document.getElementById('next-btn');
+
+            if (currentQuestionIndex === currentExam.length - 1) {
+
+                btn.textContent = 'Zurück zu Ergebnissen';
+
+                btn.onclick = showResults;
+
+            } else {
+
+                btn.textContent = 'Weiter →';
+
+                btn.onclick = () => {
+
+                    currentQuestionIndex++;
+
+                    showReviewQuestion();
+
+                };
+
+            }
+
+        }
+
+ 
+
+        function showResults() {
+
+            document.getElementById('question-container').style.display = 'none';
+
+            document.getElementById('result-screen').style.display = 'block';
+
+        }
+
+ 
+
+        function restartExam() {
+
+            location.reload();
+
+        }
+
+        function exitQuiz() {
+            let countdown = 3;
+            const confirmMsg = `Prüfung wirklich beenden?\n\nSchließt in ${countdown} Sekunden...`;
+
+            if (confirm(confirmMsg)) {
+                const countdownInterval = setInterval(() => {
+                    countdown--;
+                    if (countdown <= 0) {
+                        clearInterval(countdownInterval);
+                        window.close();
+                        // Fallback: Wenn window.close() nicht funktioniert (z.B. nicht vom Script geöffnet)
+                        setTimeout(() => {
+                            location.href = 'about:blank';
+                        }, 500);
+                    }
+                }, 1000);
+            }
+        }
+
+
+
+        // Initialize on load
+
+        window.onload = function() {
+
+            console.log(`Prüfungssimulator geladen mit ${questionDatabase.length} Fragen`);
+
+        };
+
+    </script>
+
+</body>
+
+</html>
