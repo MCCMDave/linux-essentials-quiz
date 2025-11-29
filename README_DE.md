@@ -20,18 +20,14 @@ Aufbauend auf [Phase 1.5 (Assignment 2)](../phase1.5-oop/assignment2_quiz_system
 
 ## ✨ Features
 
-### Version 1.0 (quiz_engine_v1.py)
-- 277 Fragen direkt im Code (embedded)
-- OOP mit `Frage` Klasse
-- Professionelle Formatierung
-- Basis für V2 - zeigt Code-Evolution
-
-### Version 2.0 (quiz_engine_v2.py)
+### 🐍 Python Terminal Version (quiz_engine.py)
 - ✅ **276 Fragen aus JSON** - einfach erweiterbar
+- ✅ **Single-Keypress Eingabe** - kein Enter nötig!
 - ✅ **3 Quiz-Modi:**
   - **Lernmodus:** Alle 276 Fragen durchgehen
   - **Prüfungsmodus:** 40 Fragen, 60 Minuten Timer
   - **Custom-Modus:** Beliebige Anzahl wählen
+- ✅ **Live-Timer:** Echtzeit-Countdown während Fragen
 - ✅ **Randomisierung:**
   - Fragen in zufälliger Reihenfolge
   - Antworten gemischt (A-D)
@@ -40,6 +36,12 @@ Aufbauend auf [Phase 1.5 (Assignment 2)](../phase1.5-oop/assignment2_quiz_system
   - Richtige vs. falsche Antworten
   - Zeitanzeige (Prüfungsmodus)
   - Bestanden/Nicht Bestanden (≥60%)
+
+### 🌐 Web Browser Version (index.html)
+- ✅ **Modernes Web-Interface** - keine Installation nötig
+- ✅ **800-Punkte-System** wie echte Prüfung
+- ✅ **Sofortige Erklärungen** bei falschen Antworten
+- ✅ **Mobile-Friendly** - funktioniert auf allen Geräten
 
 ---
 
@@ -94,7 +96,7 @@ Aufbauend auf [Phase 1.5 (Assignment 2)](../phase1.5-oop/assignment2_quiz_system
 
 ### Start
 ```bash
-python quiz_engine_v2.py
+python quiz_engine.py
 ```
 
 ### Menü-Optionen

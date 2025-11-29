@@ -12,8 +12,9 @@ An interactive quiz system for Linux Essentials 010-160 exam preparation with 27
 
 ### 🎯 Two Versions Available
 
-**🐍 Python Terminal Version** (`quiz_engine_v2.py`)
+**🐍 Python Terminal Version** (`quiz_engine.py`)
 - Terminal-based quiz with live countdown timer
+- Single-keypress input (no Enter needed!)
 - Built-in question editor (open fragen.json from menu)
 - Weighted exam mode (LPI-compliant topic distribution)
 - Real-time timer display during questions
@@ -62,7 +63,7 @@ git clone https://github.com/MCCMDave/linux-essentials-quiz.git
 cd linux-essentials-quiz
 
 # Run Python quiz
-python quiz_engine_v2.py
+python quiz_engine.py
 ```
 
 **Requirements:** Python 3.10+ (no external dependencies!)
@@ -152,12 +153,12 @@ Want to create a quiz for a different exam or topic? Easy!
    ```
 
 4. **Modify Python File** (optional)
-   - Open `quiz_engine_v2.py`
+   - Open `quiz_engine.py`
    - Line ~15: Change `'fragen.json'` to `'my-quiz.json'`
 
 5. **Run Your Quiz**
    ```bash
-   python quiz_engine_v2.py
+   python quiz_engine.py
    ```
 
 ### Tips for Creating Questions
@@ -267,8 +268,7 @@ Based on **Linux Essentials 010-160 v1.6** exam format.
 ```
 linux-essentials-quiz/
 ├── index.html                  # 🌐 Web version (browser-based)
-├── quiz_engine_v2.py           # 🐍 Python terminal version (with live timer)
-├── quiz_engine_v1.py           # Legacy version (embedded questions)
+├── quiz_engine.py              # 🐍 Python terminal version (main)
 ├── fragen.json                 # Question database (276 questions)
 ├── FRAGEN-HINZUFUEGEN.md       # Guide for adding questions
 ├── README.md                   # English documentation
@@ -334,24 +334,23 @@ Python Developer | Linux Essentials Certified (85%+)
 
 ## 📝 Changelog
 
-### v2.1 (January 2025) - Python Enhancements
+### v2.2 (November 2025) - Simplified Structure
+- ✅ **Single-Keypress Input:** No Enter needed for answers (A/B/C/D)
+- ✅ **Cleaner Structure:** Removed legacy v1, renamed v2 to main version
+- ✅ **Visual Feedback:** Answer display with "==" indicator
+- ✅ **README Cleanup:** Updated documentation for new structure
+
+### v2.1 (November 2025) - Python Enhancements
 - ✅ **Live Timer:** Real-time countdown display during questions
 - ✅ **Weighted Exam:** LPI-compliant topic distribution in exam mode
 - ✅ **Question Editor:** Built-in menu to edit fragen.json
 - ✅ **UI Improvements:** Better visual separation with divider lines
-- ✅ **README Updates:** Documented both web and Python versions
 
 ### v2.0 (November 2025) - Web & Python
 - ✅ Web version (index.html) with modern UI
 - ✅ Python version with JSON database (276 questions)
 - ✅ 3 quiz modes (Learning/Exam/Custom)
 - ✅ Timer system for exam mode
-- ✅ Answer shuffling
-- ✅ Pass/Fail logic
-
-### v1.0 (November 2025) - Initial Release
-- ✅ Basic quiz with 277 embedded questions
-- ✅ OOP with Question class
 
 ---
 
