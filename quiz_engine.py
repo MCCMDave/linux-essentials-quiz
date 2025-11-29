@@ -23,11 +23,148 @@ RAHMEN = "="
 EINRUECKUNG = 31
 OPT_EINRUECKUNG = 38
 
+# Globale Sprach-Variable
+LANGUAGE = "de"  # Default: Deutsch
+
+# Übersetzungen
+TEXTS = {
+    "de": {
+        "header": " Linux Essentials Quiz-System ",
+        "footer": " Ende vom Quiz ",
+        "menu_title": " QUIZ-MODUS WÄHLEN ",
+        "menu_learn": " [1] Lernmodus - Alle Fragen (276) ",
+        "menu_exam": " [2] Prüfungsmodus - 40 Fragen, 60 Min ",
+        "menu_custom": " [3] Custom - Anzahl wählen ",
+        "menu_edit": " [4] Fragen bearbeiten ",
+        "menu_exit": " [0] Beenden ",
+        "menu_prompt": "Deine Wahl (0/1/2/3/4): ",
+        "menu_error": " FEHLER: Bitte nur 0, 1, 2, 3 oder 4 eingeben! ",
+        "answer_prompt": "Deine Antwort (A/B/C/D): ",
+        "answer_error": " FEHLER: Bitte nur A, B, C oder D! ",
+        "correct": " RICHTIG! Sehr gut! ",
+        "wrong": " FALSCH! Die richtige Antwort ist: ",
+        "category": " Kategorie: ",
+        "question": " Frage: ",
+        "result_title": " 📊 ENDERGEBNIS ",
+        "result_correct": " Richtig: ",
+        "result_percent": " Prozent: ",
+        "result_passed": " BESTANDEN! (≥60% erforderlich) ",
+        "result_failed": " NICHT BESTANDEN (<60%) ",
+        "result_time": " Benötigte Zeit: ",
+        "result_remaining": " Zeit übrig: ",
+        "timer_started": " ⏱️  Timer gestartet: 60 Minuten ",
+        "timer_expired": " ZEIT ABGELAUFEN! ",
+        "timer_warning": " ⚠️  WARNUNG: Nur noch {} übrig! ",
+        "questions_loaded": " Insgesamt {} Fragen geladen ",
+        "question_count": " Frage {} von {} ",
+        "goodbye": " Bis bald! ",
+        "back_to_menu": " Zurück zum Hauptmenü ",
+        "how_many": " Wie viele Fragen möchtest du? (1-{}) ",
+        "number_prompt": "Anzahl: ",
+        "number_error": " FEHLER: Bitte eine Zahl zwischen 1 und {}! ",
+        "invalid_number": " FEHLER: Bitte eine gültige Zahl eingeben! ",
+    },
+    "en": {
+        "header": " Linux Essentials Quiz System ",
+        "footer": " End of Quiz ",
+        "menu_title": " CHOOSE QUIZ MODE ",
+        "menu_learn": " [1] Learning Mode - All Questions (276) ",
+        "menu_exam": " [2] Exam Mode - 40 Questions, 60 Min ",
+        "menu_custom": " [3] Custom - Choose Number ",
+        "menu_edit": " [4] Edit Questions ",
+        "menu_exit": " [0] Exit ",
+        "menu_prompt": "Your choice (0/1/2/3/4): ",
+        "menu_error": " ERROR: Please enter only 0, 1, 2, 3, or 4! ",
+        "answer_prompt": "Your answer (A/B/C/D): ",
+        "answer_error": " ERROR: Please enter only A, B, C, or D! ",
+        "correct": " CORRECT! Well done! ",
+        "wrong": " WRONG! The correct answer is: ",
+        "category": " Category: ",
+        "question": " Question: ",
+        "result_title": " 📊 FINAL RESULT ",
+        "result_correct": " Correct: ",
+        "result_percent": " Percentage: ",
+        "result_passed": " PASSED! (≥60% required) ",
+        "result_failed": " FAILED (<60%) ",
+        "result_time": " Time taken: ",
+        "result_remaining": " Time remaining: ",
+        "timer_started": " ⏱️  Timer started: 60 minutes ",
+        "timer_expired": " TIME EXPIRED! ",
+        "timer_warning": " ⚠️  WARNING: Only {} remaining! ",
+        "questions_loaded": " Total {} questions loaded ",
+        "question_count": " Question {} of {} ",
+        "goodbye": " Goodbye! ",
+        "back_to_menu": " Back to Main Menu ",
+        "how_many": " How many questions do you want? (1-{}) ",
+        "number_prompt": "Number: ",
+        "number_error": " ERROR: Please enter a number between 1 and {}! ",
+        "invalid_number": " ERROR: Please enter a valid number! ",
+    },
+}
+
+
+def t(key, *args):
+    """Übersetzungsfunktion - gibt Text in aktueller Sprache zurück."""
+    text = TEXTS.get(LANGUAGE, TEXTS["de"]).get(key, key)
+    if args:
+        return text.format(*args)
+    return text
+
+
+def waehle_sprache():
+    """Sprachauswahl am Programmstart."""
+    global LANGUAGE
+    print(RAHMEN * BREITE)
+    print(RAHMEN * 2 + " LANGUAGE / SPRACHE ".center(INNENBREITE) + RAHMEN * 2)
+    print(RAHMEN * 2 + "".center(INNENBREITE) + RAHMEN * 2)
+    print(RAHMEN * 2 + " [1] Deutsch ".center(INNENBREITE) + RAHMEN * 2)
+    print(RAHMEN * 2 + " [2] English ".center(INNENBREITE) + RAHMEN * 2)
+    print(RAHMEN * 2 + "".center(INNENBREITE) + RAHMEN * 2)
+    print(RAHMEN * BREITE)
+
+    if sys.platform == "win32":
+        import msvcrt
+
+        while True:
+            print(RAHMEN * 2 + "".center(INNENBREITE) + RAHMEN * 2)
+            sys.stdout.write(RAHMEN * 2 + " " * EINRUECKUNG + "Choice / Wahl (1/2): ")
+            sys.stdout.flush()
+            taste = msvcrt.getch().decode("utf-8")
+            sys.stdout.write(f" {taste} ==")
+            print()
+
+            if taste in ["1", "2"]:
+                LANGUAGE = "de" if taste == "1" else "en"
+                break
+            else:
+                print(RAHMEN * 2 + "".center(INNENBREITE) + RAHMEN * 2)
+                print(
+                    RAHMEN * 2
+                    + " ERROR: Please enter 1 or 2! / FEHLER: Bitte 1 oder 2 eingeben! ".center(
+                        INNENBREITE
+                    )
+                    + RAHMEN * 2
+                )
+    else:
+        while True:
+            wahl = input(RAHMEN * 2 + " " * EINRUECKUNG + "Choice / Wahl (1/2): ")
+            if wahl in ["1", "2"]:
+                LANGUAGE = "de" if wahl == "1" else "en"
+                break
+            else:
+                print(
+                    RAHMEN * 2
+                    + " ERROR: Please enter 1 or 2! / FEHLER: Bitte 1 oder 2 eingeben! ".center(
+                        INNENBREITE
+                    )
+                    + RAHMEN * 2
+                )
+
 
 def header():
     """Header mit Rahmen ausgeben."""
     trennung()
-    zeige_zeile(" Linux Essentials Quiz-System ")
+    zeige_zeile(t("header"))
     trennung()
     leer()
 
@@ -35,7 +172,7 @@ def header():
 def footer():
     """Zeigt den Programm-Footer."""
     trennung()
-    zeige_zeile(" Ende vom Quiz ")
+    zeige_zeile(t("footer"))
     trennung()
 
 
@@ -103,7 +240,7 @@ def hole_antwort(prompt):
             return taste
         else:
             leer()
-            zeige_zeile(" FEHLER: Bitte nur A, B, C oder D! ")
+            zeige_zeile(t("answer_error"))
 
 
 def formatiere_zeit(sekunden):
@@ -126,9 +263,7 @@ def zeige_zeitwarnung(verbleibende_zeit):
     minuten = verbleibende_zeit / 60
     if 0 < minuten <= 5:
         leer()
-        zeige_zeile(
-            f" ⚠️  WARNUNG: Nur noch {formatiere_zeit(verbleibende_zeit)} übrig! "
-        )
+        zeige_zeile(t("timer_warning", formatiere_zeit(verbleibende_zeit)))
         leer()
 
 
@@ -140,25 +275,25 @@ def zeige_menue():
         str: Die Wahl des Users ("1", "2", "3", "4" oder "0")
     """
     leer()
-    zeige_zeile(" QUIZ-MODUS WÄHLEN ")
+    zeige_zeile(t("menu_title"))
     leer()
-    zeige_zeile(" [1] Lernmodus - Alle Fragen (276) ")
-    zeige_zeile(" [2] Prüfungsmodus - 40 Fragen, 60 Min ")
-    zeige_zeile(" [3] Custom - Anzahl wählen ")
-    zeige_zeile(" [4] Fragen bearbeiten ")
-    zeige_zeile(" [0] Beenden ")
+    zeige_zeile(t("menu_learn"))
+    zeige_zeile(t("menu_exam"))
+    zeige_zeile(t("menu_custom"))
+    zeige_zeile(t("menu_edit"))
+    zeige_zeile(t("menu_exit"))
     leer()
     trennung()
 
     while True:
         leer()
-        wahl = input(RAHMEN * 2 + " " * EINRUECKUNG + "Deine Wahl (0/1/2/3/4): ")
+        wahl = input(RAHMEN * 2 + " " * EINRUECKUNG + t("menu_prompt"))
 
         if wahl in ["0", "1", "2", "3", "4"]:
             return wahl
         else:
             leer()
-            zeige_zeile(" FEHLER: Bitte nur 0, 1, 2, 3 oder 4 eingeben! ")
+            zeige_zeile(t("menu_error"))
 
 
 def hole_anzahl_fragen(max_fragen):
@@ -172,20 +307,20 @@ def hole_anzahl_fragen(max_fragen):
         int: Gewählte Anzahl Fragen
     """
     leer()
-    zeige_zeile(f" Wie viele Fragen möchtest du? (1-{max_fragen}) ")
+    zeige_zeile(t("how_many", max_fragen))
 
     while True:
         leer()
         try:
-            anzahl = int(input(RAHMEN * 2 + " " * EINRUECKUNG + "Anzahl: "))
+            anzahl = int(input(RAHMEN * 2 + " " * EINRUECKUNG + t("number_prompt")))
             if 1 <= anzahl <= max_fragen:
                 return anzahl
             else:
                 leer()
-                zeige_zeile(f" FEHLER: Bitte eine Zahl zwischen 1 und {max_fragen}! ")
+                zeige_zeile(t("number_error", max_fragen))
         except ValueError:
             leer()
-            zeige_zeile(" FEHLER: Bitte eine gültige Zahl eingeben! ")
+            zeige_zeile(t("invalid_number"))
 
 
 def oeffne_fragen_editor():
@@ -332,9 +467,9 @@ class Frage:
         Die Ausgabe zeigt Kategorie, Fragetext u. vier Optionen
         mit den Buchstaben A-D in einem Rahmen.
         """
-        zeige_zeile(f" Kategorie: {self.kategorie} ")
+        zeige_zeile(t("category") + self.kategorie + " ")
         leer()
-        zeige_zeile(f" Frage: {self.frage} ")
+        zeige_zeile(t("question") + self.frage + " ")
         leer()
         buchstaben = ["A", "B", "C", "D"]
         for i, option in enumerate(self.optionen):
@@ -429,6 +564,9 @@ def main():
     - Prüfungsmodus: 40 Fragen mit 60 Min Timer
     - Custom: Beliebige Anzahl ohne Zeitlimit
     """
+    # Sprachauswahl
+    waehle_sprache()
+
     header()
 
     # Menü anzeigen u. Modus wählen
@@ -436,14 +574,14 @@ def main():
 
     if modus == "0":
         leer()
-        zeige_zeile(" Bis bald! ")
+        zeige_zeile(t("goodbye"))
         footer()
         return
     elif modus == "4":
         # Fragen-Editor öffnen
         oeffne_fragen_editor()
         leer()
-        zeige_zeile(" Zurück zum Hauptmenü ")
+        zeige_zeile(t("back_to_menu"))
         footer()
         return
 
@@ -493,7 +631,7 @@ def main():
         leer()
         trennung()
         leer()
-        zeige_zeile(" ⏱️  Timer gestartet: 60 Minuten ")
+        zeige_zeile(t("timer_started"))
         leer()
         # Live-Timer starten
         live_timer = LiveTimer(start_zeit, zeitlimit_sekunden)
@@ -508,7 +646,7 @@ def main():
         frage.shuffle_optionen()
 
     richtige_antworten = 0
-    zeige_zeile(f" Insgesamt {len(fragen_liste)} Fragen geladen ")
+    zeige_zeile(t("questions_loaded", len(fragen_liste)))
     leer()
 
     # Quiz durchlaufen
@@ -524,8 +662,7 @@ def main():
                 leer()
                 trennung()
                 leer()
-                zeige_zeile(" ZEIT ABGELAUFEN! ")
-                zeige_zeile(" Quiz wird beendet... ")
+                zeige_zeile(t("timer_expired"))
                 leer()
                 trennung()
                 break
@@ -534,28 +671,28 @@ def main():
             if i % 10 == 0:  # Alle 10 Fragen prüfen
                 zeige_zeitwarnung(verbleibende_zeit)
 
-        zeige_zeile(f" Frage {i} von {len(fragen_liste)} ")
+        zeige_zeile(t("question_count", i, len(fragen_liste)))
 
         # Zeit-Info im Prüfungsmodus
         if hat_zeitlimit:
             _, verbleibende_zeit = pruefe_zeitlimit(start_zeit, zeitlimit_sekunden)
-            zeige_zeile(f" ⏱️  Zeit: {formatiere_zeit(verbleibende_zeit)} ")
+            zeige_zeile(f" ⏱️  {formatiere_zeit(verbleibende_zeit)} ")
 
         leer()
 
         # Frage anzeigen u. Antwort holen
         frage.zeige_frage()
-        antwort = hole_antwort("Deine Antwort (A/B/C/D): ")
+        antwort = hole_antwort(t("answer_prompt"))
 
         # Antwort kontrollieren u. Feedback geben
         if frage.checke_antwort(antwort):
             leer()
-            zeige_zeile(" RICHTIG! Sehr gut! ")
+            zeige_zeile(t("correct"))
             tren_leer()
             richtige_antworten += 1
         else:
             leer()
-            zeige_zeile(" FALSCH! Die richtige Antwort ist: ")
+            zeige_zeile(t("wrong"))
             frage.zeige_antwort()
             tren_leer()
 
@@ -568,33 +705,33 @@ def main():
     leer()
     trennung()
     leer()
-    zeige_zeile(" 📊 ENDERGEBNIS ")
+    zeige_zeile(t("result_title"))
     leer()
 
     # Beantwortete Fragen (bei Zeitablauf)
     beantwortete_fragen = i if hat_zeitlimit else len(fragen_liste)
 
-    zeige_zeile(f" Richtig: {richtige_antworten}/{beantwortete_fragen} ")
+    zeige_zeile(t("result_correct") + f"{richtige_antworten}/{beantwortete_fragen} ")
 
     if beantwortete_fragen > 0:
         prozent = (richtige_antworten / beantwortete_fragen) * 100
-        zeige_zeile(f" Prozent: {prozent:.1f}% ")
+        zeige_zeile(t("result_percent") + f"{prozent:.1f}% ")
 
         # Bestanden-Info für Prüfungsmodus
         if modus == "2":
             if prozent >= 60:
-                zeige_zeile(" BESTANDEN! (≥60% erforderlich) ")
+                zeige_zeile(t("result_passed"))
             else:
-                zeige_zeile(" NICHT BESTANDEN (<60%) ")
+                zeige_zeile(t("result_failed"))
 
     # Zeit-Statistik
     if hat_zeitlimit:
         verstrichene_zeit = time.time() - start_zeit
-        zeige_zeile(f" Benötigte Zeit: {formatiere_zeit(verstrichene_zeit)} ")
+        zeige_zeile(t("result_time") + formatiere_zeit(verstrichene_zeit) + " ")
 
         if verstrichene_zeit < zeitlimit_sekunden:
             gesparte_zeit = zeitlimit_sekunden - verstrichene_zeit
-            zeige_zeile(f" Zeit übrig: {formatiere_zeit(gesparte_zeit)} ")
+            zeige_zeile(t("result_remaining") + formatiere_zeit(gesparte_zeit) + " ")
 
     leer()
     trennung()
