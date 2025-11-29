@@ -287,7 +287,20 @@ def zeige_menue():
 
     while True:
         leer()
-        wahl = input(RAHMEN * 2 + " " * EINRUECKUNG + t("menu_prompt"))
+        sys.stdout.write(RAHMEN * 2 + " " * EINRUECKUNG + t("menu_prompt"))
+        sys.stdout.flush()
+
+        # Single-keypress Input (Windows)
+        if sys.platform == "win32":
+            import msvcrt
+            wahl = msvcrt.getch().decode("utf-8")
+        else:
+            # Fallback für Linux/Mac
+            wahl = input()
+
+        # Zeige Auswahl mit ==
+        sys.stdout.write(f" {wahl} ==")
+        print()
 
         if wahl in ["0", "1", "2", "3", "4"]:
             return wahl
@@ -342,7 +355,20 @@ def oeffne_fragen_editor():
 
     while True:
         leer()
-        wahl = input(RAHMEN * 2 + " " * EINRUECKUNG + "Deine Wahl (0/1/2): ")
+        sys.stdout.write(RAHMEN * 2 + " " * EINRUECKUNG + "Deine Wahl (0/1/2): ")
+        sys.stdout.flush()
+
+        # Single-keypress Input (Windows)
+        if sys.platform == "win32":
+            import msvcrt
+            wahl = msvcrt.getch().decode("utf-8")
+        else:
+            # Fallback für Linux/Mac
+            wahl = input()
+
+        # Zeige Auswahl mit ==
+        sys.stdout.write(f" {wahl} ==")
+        print()
 
         if wahl == "0":
             return
@@ -569,175 +595,177 @@ def main():
 
     header()
 
-    # Menü anzeigen u. Modus wählen
-    modus = zeige_menue()
+    while True:
+        # Menü anzeigen u. Modus wählen
+        modus = zeige_menue()
 
-    if modus == "0":
+        if modus == "0":
+            leer()
+            zeige_zeile(t("goodbye"))
+            footer()
+            return
+        elif modus == "4":
+            # Fragen-Editor öffnen
+            oeffne_fragen_editor()
+            # Nach Editor zurück zum Menü
+            continue
+
+        # Fragen laden (nur für Modus 1-3)
+        fragen_liste = lade_fragen()
+        max_fragen = len(fragen_liste)
+
+        # Timer-Variablen
+        hat_zeitlimit = False
+        start_zeit = None
+        zeitlimit_sekunden = 0
+        live_timer = None
+
+        # Anzahl Fragen je nach Modus
+        if modus == "1":
+            # Lernmodus: Alle Fragen
+            pass
+        elif modus == "2":
+            # Prüfungsmodus: 40 Fragen mit Gewichtung, 60 Min
+            # Gewichtung nach LPI 010-160 v1.6
+            gewichtung = {
+                "1.": 7,  # Topic 1: 17.5% (7 von 40 Fragen)
+                "2.": 9,  # Topic 2: 22.5% (9 von 40 Fragen)
+                "3.": 9,  # Topic 3: 22.5% (9 von 40 Fragen)
+                "4.": 8,  # Topic 4: 20% (8 von 40 Fragen)
+                "5.": 7,  # Topic 5: 17.5% (7 von 40 Fragen)
+            }
+
+            # Fragen nach Topics gruppieren und gewichtet auswählen
+            exam_fragen = []
+            for topic_prefix, anzahl in gewichtung.items():
+                # Filtere Fragen nach Topic (z.B. alle die mit "1." beginnen)
+                topic_fragen = [
+                    f for f in fragen_liste if f.kategorie.startswith(topic_prefix)
+                ]
+                # Mische und nimm die benötigte Anzahl
+                random.shuffle(topic_fragen)
+                exam_fragen.extend(topic_fragen[:anzahl])
+
+            # Gesamte Prüfung nochmal mischen
+            random.shuffle(exam_fragen)
+            fragen_liste = exam_fragen
+
+            hat_zeitlimit = True
+            zeitlimit_sekunden = 60 * 60  # 60 Minuten
+            start_zeit = time.time()
+            leer()
+            trennung()
+            leer()
+            zeige_zeile(t("timer_started"))
+            leer()
+            # Live-Timer starten
+            live_timer = LiveTimer(start_zeit, zeitlimit_sekunden)
+            live_timer.start()
+        elif modus == "3":
+            # Custom: User wählt Anzahl
+            anzahl = hole_anzahl_fragen(max_fragen)
+            fragen_liste = fragen_liste[:anzahl]
+
+        # Antworten für jede Frage shufflen
+        for frage in fragen_liste:
+            frage.shuffle_optionen()
+
+        richtige_antworten = 0
+        zeige_zeile(t("questions_loaded", len(fragen_liste)))
         leer()
-        zeige_zeile(t("goodbye"))
-        footer()
-        return
-    elif modus == "4":
-        # Fragen-Editor öffnen
-        oeffne_fragen_editor()
-        leer()
-        zeige_zeile(t("back_to_menu"))
-        footer()
-        return
 
-    # Fragen laden
-    fragen_liste = lade_fragen()
-    max_fragen = len(fragen_liste)
+        # Quiz durchlaufen
+        for i, frage in enumerate(fragen_liste, 1):
 
-    # Timer-Variablen
-    hat_zeitlimit = False
-    start_zeit = None
-    zeitlimit_sekunden = 0
-    live_timer = None
+            # Zeitlimit prüfen (nur Prüfungsmodus)
+            if hat_zeitlimit:
+                ist_abgelaufen, verbleibende_zeit = pruefe_zeitlimit(
+                    start_zeit, zeitlimit_sekunden
+                )
 
-    # Anzahl Fragen je nach Modus
-    if modus == "1":
-        # Lernmodus: Alle Fragen
-        pass
-    elif modus == "2":
-        # Prüfungsmodus: 40 Fragen mit Gewichtung, 60 Min
-        # Gewichtung nach LPI 010-160 v1.6
-        gewichtung = {
-            "1.": 7,  # Topic 1: 17.5% (7 von 40 Fragen)
-            "2.": 9,  # Topic 2: 22.5% (9 von 40 Fragen)
-            "3.": 9,  # Topic 3: 22.5% (9 von 40 Fragen)
-            "4.": 8,  # Topic 4: 20% (8 von 40 Fragen)
-            "5.": 7,  # Topic 5: 17.5% (7 von 40 Fragen)
-        }
+                if ist_abgelaufen:
+                    leer()
+                    trennung()
+                    leer()
+                    zeige_zeile(t("timer_expired"))
+                    leer()
+                    trennung()
+                    break
 
-        # Fragen nach Topics gruppieren und gewichtet auswählen
-        exam_fragen = []
-        for topic_prefix, anzahl in gewichtung.items():
-            # Filtere Fragen nach Topic (z.B. alle die mit "1." beginnen)
-            topic_fragen = [
-                f for f in fragen_liste if f.kategorie.startswith(topic_prefix)
-            ]
-            # Mische und nimm die benötigte Anzahl
-            random.shuffle(topic_fragen)
-            exam_fragen.extend(topic_fragen[:anzahl])
+                # Warnung bei wenig Zeit
+                if i % 10 == 0:  # Alle 10 Fragen prüfen
+                    zeige_zeitwarnung(verbleibende_zeit)
 
-        # Gesamte Prüfung nochmal mischen
-        random.shuffle(exam_fragen)
-        fragen_liste = exam_fragen
+            zeige_zeile(t("question_count", i, len(fragen_liste)))
 
-        hat_zeitlimit = True
-        zeitlimit_sekunden = 60 * 60  # 60 Minuten
-        start_zeit = time.time()
+            # Zeit-Info im Prüfungsmodus
+            if hat_zeitlimit:
+                _, verbleibende_zeit = pruefe_zeitlimit(start_zeit, zeitlimit_sekunden)
+                zeige_zeile(f" ⏱️  {formatiere_zeit(verbleibende_zeit)} ")
+
+            leer()
+
+            # Frage anzeigen u. Antwort holen
+            frage.zeige_frage()
+            antwort = hole_antwort(t("answer_prompt"))
+
+            # Antwort kontrollieren u. Feedback geben
+            if frage.checke_antwort(antwort):
+                leer()
+                zeige_zeile(t("correct"))
+                tren_leer()
+                richtige_antworten += 1
+            else:
+                leer()
+                zeige_zeile(t("wrong"))
+                frage.zeige_antwort()
+                tren_leer()
+
+        # Live-Timer stoppen (falls aktiv)
+        if live_timer:
+            live_timer.stop()
+            print()  # Neue Zeile nach Timer-Stop
+
+        # Endergebnis
         leer()
         trennung()
         leer()
-        zeige_zeile(t("timer_started"))
-        leer()
-        # Live-Timer starten
-        live_timer = LiveTimer(start_zeit, zeitlimit_sekunden)
-        live_timer.start()
-    elif modus == "3":
-        # Custom: User wählt Anzahl
-        anzahl = hole_anzahl_fragen(max_fragen)
-        fragen_liste = fragen_liste[:anzahl]
-
-    # Antworten für jede Frage shufflen
-    for frage in fragen_liste:
-        frage.shuffle_optionen()
-
-    richtige_antworten = 0
-    zeige_zeile(t("questions_loaded", len(fragen_liste)))
-    leer()
-
-    # Quiz durchlaufen
-    for i, frage in enumerate(fragen_liste, 1):
-
-        # Zeitlimit prüfen (nur Prüfungsmodus)
-        if hat_zeitlimit:
-            ist_abgelaufen, verbleibende_zeit = pruefe_zeitlimit(
-                start_zeit, zeitlimit_sekunden
-            )
-
-            if ist_abgelaufen:
-                leer()
-                trennung()
-                leer()
-                zeige_zeile(t("timer_expired"))
-                leer()
-                trennung()
-                break
-
-            # Warnung bei wenig Zeit
-            if i % 10 == 0:  # Alle 10 Fragen prüfen
-                zeige_zeitwarnung(verbleibende_zeit)
-
-        zeige_zeile(t("question_count", i, len(fragen_liste)))
-
-        # Zeit-Info im Prüfungsmodus
-        if hat_zeitlimit:
-            _, verbleibende_zeit = pruefe_zeitlimit(start_zeit, zeitlimit_sekunden)
-            zeige_zeile(f" ⏱️  {formatiere_zeit(verbleibende_zeit)} ")
-
+        zeige_zeile(t("result_title"))
         leer()
 
-        # Frage anzeigen u. Antwort holen
-        frage.zeige_frage()
-        antwort = hole_antwort(t("answer_prompt"))
+        # Beantwortete Fragen (bei Zeitablauf)
+        beantwortete_fragen = i if hat_zeitlimit else len(fragen_liste)
 
-        # Antwort kontrollieren u. Feedback geben
-        if frage.checke_antwort(antwort):
-            leer()
-            zeige_zeile(t("correct"))
-            tren_leer()
-            richtige_antworten += 1
-        else:
-            leer()
-            zeige_zeile(t("wrong"))
-            frage.zeige_antwort()
-            tren_leer()
+        zeige_zeile(t("result_correct") + f"{richtige_antworten}/{beantwortete_fragen} ")
 
-    # Live-Timer stoppen (falls aktiv)
-    if live_timer:
-        live_timer.stop()
-        print()  # Neue Zeile nach Timer-Stop
+        if beantwortete_fragen > 0:
+            prozent = (richtige_antworten / beantwortete_fragen) * 100
+            zeige_zeile(t("result_percent") + f"{prozent:.1f}% ")
 
-    # Endergebnis
-    leer()
-    trennung()
-    leer()
-    zeige_zeile(t("result_title"))
-    leer()
+            # Bestanden-Info für Prüfungsmodus
+            if modus == "2":
+                if prozent >= 60:
+                    zeige_zeile(t("result_passed"))
+                else:
+                    zeige_zeile(t("result_failed"))
 
-    # Beantwortete Fragen (bei Zeitablauf)
-    beantwortete_fragen = i if hat_zeitlimit else len(fragen_liste)
+        # Zeit-Statistik
+        if hat_zeitlimit:
+            verstrichene_zeit = time.time() - start_zeit
+            zeige_zeile(t("result_time") + formatiere_zeit(verstrichene_zeit) + " ")
 
-    zeige_zeile(t("result_correct") + f"{richtige_antworten}/{beantwortete_fragen} ")
+            if verstrichene_zeit < zeitlimit_sekunden:
+                gesparte_zeit = zeitlimit_sekunden - verstrichene_zeit
+                zeige_zeile(t("result_remaining") + formatiere_zeit(gesparte_zeit) + " ")
 
-    if beantwortete_fragen > 0:
-        prozent = (richtige_antworten / beantwortete_fragen) * 100
-        zeige_zeile(t("result_percent") + f"{prozent:.1f}% ")
+        leer()
+        trennung()
+        leer()
 
-        # Bestanden-Info für Prüfungsmodus
-        if modus == "2":
-            if prozent >= 60:
-                zeige_zeile(t("result_passed"))
-            else:
-                zeige_zeile(t("result_failed"))
-
-    # Zeit-Statistik
-    if hat_zeitlimit:
-        verstrichene_zeit = time.time() - start_zeit
-        zeige_zeile(t("result_time") + formatiere_zeit(verstrichene_zeit) + " ")
-
-        if verstrichene_zeit < zeitlimit_sekunden:
-            gesparte_zeit = zeitlimit_sekunden - verstrichene_zeit
-            zeige_zeile(t("result_remaining") + formatiere_zeit(gesparte_zeit) + " ")
-
-    leer()
-    trennung()
-    leer()
-
-    input(" " * EINRUECKUNG + "ENTER zum Beenden... ")
+        print()
+        print(" " * EINRUECKUNG + "Drücke ENTER um zum Hauptmenü zurückzukehren...")
+        print(" " * EINRUECKUNG + "Oder schließe das Fenster um das Quiz zu beenden.")
+        input(" " * EINRUECKUNG)
 
     footer()
 
